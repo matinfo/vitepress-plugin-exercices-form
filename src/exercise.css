@@ -1,0 +1,203 @@
+/* === AnswerBox === */
+.vpe-answer-box {
+  margin: 12px 0;
+}
+
+.vpe-answer-toolbar {
+  display: flex;
+  gap: 4px;
+  margin-bottom: -2px;
+}
+
+.vpe-mode-btn {
+  padding: 4px 12px;
+  font-size: 12px;
+  border: 1px solid var(--vp-c-border, #e2e2e3);
+  border-radius: 6px 6px 0 0;
+  background: var(--vp-c-bg, #fff);
+  color: var(--vp-c-text-2, #666);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  border-bottom: none;
+  margin-bottom: 2px;
+}
+
+.vpe-mode-btn.active {
+  background: var(--vp-c-bg-soft, #f6f6f7);
+  color: var(--vp-c-text-1, #213547);
+  font-weight: 600;
+  border-color: var(--vp-c-border, #e2e2e3);
+  border: 1px solid var(--vp-c-border, #e2e2e3);
+  margin-bottom: 1px;
+  border-bottom: 0;
+}
+
+.vpe-mode-btn:hover:not(.active) {
+  background: var(--vp-c-bg-alt, #f6f6f7);
+}
+
+.vpe-editor-wrapper {
+  display: flex;
+  border: 1px solid var(--vp-c-border, #e2e2e3);
+  border-radius: 0 8px 8px 8px;
+  overflow: hidden;
+  background: var(--vp-c-bg-soft, #f6f6f7);
+  transition: border-color 0.2s;
+}
+
+.vpe-editor-wrapper:focus-within {
+  border-color: var(--vp-c-brand-1, #5b8def);
+}
+
+.vpe-line-numbers {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 0;
+  min-width: 36px;
+  text-align: right;
+  background: var(--vp-c-bg-alt, #f6f6f7);
+  border-right: 1px solid var(--vp-c-border, #e2e2e3);
+  user-select: none;
+}
+
+.vpe-line-numbers span {
+  padding: 0 8px;
+  font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--vp-c-text-3, #999);
+}
+
+.vpe-answer-box textarea {
+  flex: 1;
+  width: 100%;
+  min-height: 80px;
+  padding: 12px;
+  border: none;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  resize: none;
+  overflow: hidden;
+  background: transparent;
+  color: var(--vp-c-text-1, #213547);
+}
+
+.vpe-code-mode textarea {
+  font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
+  font-size: 13px;
+  tab-size: 2;
+  white-space: pre;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.vpe-answer-box textarea:focus {
+  outline: none;
+}
+
+.vpe-answer-box textarea::placeholder {
+  color: var(--vp-c-text-3, #999);
+}
+
+/* === ExercisePdfButton === */
+.exercise-pdf-section {
+  margin-top: 32px;
+  padding-top: 16px;
+}
+
+.exercise-pdf-section h3 {
+  margin: 16px 0 12px;
+}
+
+.vpe-student-fields {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.vpe-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 180px;
+}
+
+.vpe-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--vp-c-text-2, #666);
+}
+
+.vpe-field input {
+  padding: 8px 12px;
+  border: 1px solid var(--vp-c-border, #e2e2e3);
+  border-radius: 6px;
+  font-size: 14px;
+  background: var(--vp-c-bg-soft, #f6f6f7);
+  color: var(--vp-c-text-1, #213547);
+  transition: border-color 0.2s;
+}
+
+.vpe-field input:focus {
+  outline: none;
+  border-color: var(--vp-c-brand-1, #5b8def);
+}
+
+.vpe-field input.invalid {
+  border-color: var(--vp-c-danger-1, #e53e3e);
+}
+
+.vpe-required {
+  color: var(--vp-c-danger-1, #e53e3e);
+}
+
+.vpe-error-msg {
+  font-size: 12px;
+  color: var(--vp-c-danger-1, #e53e3e);
+}
+
+.vpe-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.vpe-btn-pdf {
+  padding: 10px 24px;
+  background: var(--vp-c-brand-1, #5b8def);
+  color: var(--vp-c-white, #fff);
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.vpe-btn-pdf:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.vpe-btn-pdf:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.vpe-btn-clear {
+  padding: 10px 20px;
+  background: transparent;
+  color: var(--vp-c-text-2, #666);
+  border: 1.5px solid var(--vp-c-border, #e2e2e3);
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.vpe-btn-clear:hover {
+  border-color: var(--vp-c-danger-1, #e53e3e);
+  color: var(--vp-c-danger-1, #e53e3e);
+}

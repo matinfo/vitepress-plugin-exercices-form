@@ -1,0 +1,27 @@
+import { defineConfig } from "vitepress"
+import { exerciseMarkdownPlugin, exerciceVitePlugin } from "vitepress-plugin-exercices"
+
+export default defineConfig({
+  title: "Exercise Test Project",
+  description: "Local test harness for vitepress-plugin-exercices",
+
+  markdown: {
+    config(md) {
+      md.use(exerciseMarkdownPlugin)
+    },
+  },
+
+  vite: {
+    plugins: [exerciceVitePlugin()],
+  },
+
+  themeConfig: {
+    nav: [
+      { text: "Sample Exercise", link: "/sample-exercise" },
+    ],
+    sidebar: [
+      { text: "Home", link: "/" },
+      { text: "Sample Exercise", link: "/sample-exercise" },
+    ],
+  },
+})

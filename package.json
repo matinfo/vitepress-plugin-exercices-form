@@ -1,0 +1,63 @@
+{
+  "name": "@matinfo/vitepress-plugin-exercices",
+  "version": "1.0.0",
+  "description": "VitePress plugin for interactive exercises with answer boxes and client-side PDF generation",
+  "license": "GPL-3.0-only",
+  "type": "module",
+  "main": "./dist/vitepress-plugin-exercices.umd.cjs",
+  "module": "./dist/vitepress-plugin-exercices.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/vitepress-plugin-exercices.js",
+      "require": "./dist/vitepress-plugin-exercices.umd.cjs",
+      "default": "./dist/vitepress-plugin-exercices.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "vue-tsc",
+    "pack": "npm pack",
+    "test:install": "npm run build && npm run pack && cd test-project && npm install",
+    "test:dev": "npm run test:install && cd test-project && npm run docs:dev",
+    "test:dev:only": "cd test-project && npm run docs:dev",
+    "test:build": "npm run test:install && cd test-project && npm run docs:build"
+  },
+  "peerDependencies": {
+    "vue": "^3.0.0",
+    "vitepress": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/markdown-it": "^14.1.2",
+    "@types/node": "^22.19.17",
+    "@vitejs/plugin-vue": "^5.2.4",
+    "markdown-it": "^14.1.1",
+    "typescript": "^5.9.3",
+    "vite": "^6.4.1",
+    "vite-plugin-dts": "^4.5.4",
+    "vitepress": "^1.6.4",
+    "vue": "^3.5.32",
+    "vue-tsc": "^2.2.12"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matinfo/vitepress-plugin-exercices.git"
+  },
+  "keywords": [
+    "vitepress",
+    "plugin",
+    "exercises",
+    "answer-box",
+    "pdf",
+    "education"
+  ],
+  "author": "matinfo"
+}
