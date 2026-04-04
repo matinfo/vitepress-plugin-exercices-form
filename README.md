@@ -1,46 +1,59 @@
-# @matinfo/vitepress-plugin-exercices-form
+# vitepress-plugin-exercices-form
 
-A VitePress plugin that adds interactive exercise pages with answer boxes and client-side PDF generation.
+[![npm version](https://img.shields.io/npm/v/@matinfo/vitepress-plugin-exercices-form?style=flat-square&label=npm)](https://www.npmjs.com/package/@matinfo/vitepress-plugin-exercices-form)
+[![downloads](https://img.shields.io/npm/dm/@matinfo/vitepress-plugin-exercices-form?style=flat-square&label=downloads)](https://www.npmjs.com/package/@matinfo/vitepress-plugin-exercices-form)
+[![CI](https://img.shields.io/github/actions/workflow/status/matinfo/vitepress-plugin-exercices-form/ci-plugin.yml?branch=main&style=flat-square&label=CI)](https://github.com/matinfo/vitepress-plugin-exercices-form/actions/workflows/ci-plugin.yml)
+[![publish to npm](https://img.shields.io/github/actions/workflow/status/matinfo/vitepress-plugin-exercices-form/publish-npm.yml?style=flat-square&label=publish)](https://github.com/matinfo/vitepress-plugin-exercices-form/actions/workflows/publish-npm.yml)
+[![license](https://img.shields.io/npm/l/@matinfo/vitepress-plugin-exercices-form?style=flat-square)](https://github.com/matinfo/vitepress-plugin-exercices-form/blob/main/LICENSE)
 
-## Features
+A VitePress plugin that adds interactive answer boxes to exercise pages, with localStorage persistence and client-side PDF export.
 
-- **Answer Boxes** — Text or code editor areas with localStorage persistence
-- **PDF Generation** — Client-side PDF export with student name, class, and date
-- **Markdown Syntax** — Simple `:::answer-box` fenced syntax in your `.md` files
-- **Internationalization** — Built-in locales for English, French, and German
-- **Mode Toggle** — Switch between text and code editing modes per answer box
+**Features:**
+- ✏️ Text and code answer boxes with localStorage persistence
+- 📄 Client-side PDF export (student name, class, date)
+- 🌍 i18n support — English, French, German
+- 🏷️ Simple `:::answer-box` fenced container syntax
+- 🔄 Per-box text ↔ code mode toggle
+- 🎨 Integrates with any VitePress theme
 
-## Installation
+---
+
+## Install
 
 ```bash
 npm install @matinfo/vitepress-plugin-exercices-form html2pdf.js
 ```
 
-> `html2pdf.js` is a required peer dependency for PDF generation.
+> `html2pdf.js` is a required peer dependency for PDF export.
 
-## Usage
+---
 
-### 1. VitePress Config
+## Quick start
+
+### 1. Register the markdown and Vite plugins
 
 In `.vitepress/config.ts`:
 
 ```ts
 import { defineConfig } from "vitepress"
-import { exerciseMarkdownPlugin, exerciceVitePlugin } from "@matinfo/vitepress-plugin-exercices-form"
+import {
+  exerciseMarkdownPlugin,
+  exerciceVitePlugin,
+} from "@matinfo/vitepress-plugin-exercices-form"
 
 export default defineConfig({
   markdown: {
     config(md) {
-      md.use(exerciseMarkdownPlugin)
+      md.use(exerciseMarkdownPlugin)  // parses :::answer-box fences
     },
   },
   vite: {
-    plugins: [exerciceVitePlugin()],
+    plugins: [exerciceVitePlugin()],  // handles html2pdf.js SSR exclusion
   },
 })
 ```
 
-### 2. Theme Integration
+### 2. Register components in the theme
 
 In `.vitepress/theme/index.ts`:
 
@@ -56,13 +69,11 @@ export default {
 }
 ```
 
-### 3. Write Exercises
+### 3. Write exercise pages
 
 In any `.md` file:
 
 ```md
-# My Exercise
-
 ## Question 1
 
 What is the capital of Switzerland?
@@ -76,18 +87,25 @@ Write a PowerShell script that lists all files:
 :::answer-box code
 ```
 
-- `:::answer-box` — Renders a text answer area
-- `:::answer-box code` — Renders a code editor area (monospace, tab support)
-
-### Correction Mode
-
-Use `:::answer-box-off` to mark content that should only appear in correction documents (stripped from student-facing pages):
+### 4. Add correction-only content
 
 ```md
 :::answer-box-off
-The answer is Bern.
+This content is hidden in student documents but visible in corrections.
 :::
 ```
+
+---
+
+## Markdown syntax
+
+| Block | Description |
+| --- | --- |
+| `:::answer-box` | Text answer area (resizable) |
+| `:::answer-box code` | Code editor (monospace, tab support) |
+| `:::answer-box-off` | Correction-only block — visible in PDF corrections, hidden on student pages |
+
+---
 
 ## Options
 
@@ -100,20 +118,66 @@ The answer is Bern.
 | `defaultMode` | `"text" \| "code"` | `"text"` | Default editor mode |
 | `enableModeToggle` | `boolean` | `true` | Show text/code toggle |
 | `tabSize` | `number` | `2` | Tab width in code mode |
-| `dateLocale` | `string` | same as `lang` | Date formatting locale |
+| `dateLocale` | `string` | same as `lang` | BCP 47 locale for date formatting |
 
-## Development
+---
 
-```bash
-# Build the plugin
-npm run build
+## API
 
-# Test with the included test project
-cd test-project
-npm install
-npx vitepress dev
+```ts
+// markdown-it plugin — parses :::answer-box fences
+exerciseMarkdownPlugin(md: MarkdownIt): void
+
+// Vite plugin — excludes html2pdf.js from SSR
+exerciceVitePlugin(): Plugin
+
+// registers AnswerBox and ExercisePdfButton Vue components
+enhanceAppWithExercises(app: App, options?: ExercisePluginOptions): void
+
+// returns the locale object for a given language code
+getLocale(lang: string): ExerciseLocale
+
+// built-in locale strings (keys: "en", "fr", "de")
+locales: Record<string, ExerciseLocale>
+
+// Pinia store — per-page answer state (use inside Vue components)
+useAnswerStore(): AnswerStore
 ```
+
+### Types
+
+```ts
+interface ExercisePluginOptions {
+  lang?: "en" | "fr" | "de"
+  storagePrefix?: string
+  defaultMode?: "text" | "code"
+  enableModeToggle?: boolean
+  tabSize?: number
+  dateLocale?: string
+}
+```
+
+// Locale data
+import { locales } from "@matinfo/vitepress-plugin-exercices-form"
+```
+
+---
+
+## Ecosystem
+
+| Package | Description |
+| --- | --- |
+| [@matinfo/vitepress-plugin-exercise-parser](https://github.com/matinfo/vitepress-plugin-exercise-parser) | Shared Markdown → AST parser |
+| **[@matinfo/vitepress-plugin-exercices-form](https://github.com/matinfo/vitepress-plugin-exercices-form)** | Runtime interactive answer boxes *(this package)* |
+| [@matinfo/vitepress-plugin-exercices-pdf](https://github.com/matinfo/vitepress-plugin-exercices-pdf) | Build-time student + correction PDF generator |
+| [@matinfo/vitepress-plugin-cards-pdf](https://github.com/matinfo/vitepress-plugin-cards-pdf) | Build-time card grid PDF generator |
+
+---
+
+## Contributing
+
+Pull requests are welcome — please open an issue first for significant changes.
 
 ## License
 
-GPL-3.0
+[GPL-3.0](./LICENSE)
