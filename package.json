@@ -1,18 +1,18 @@
 {
-  "name": "@matinfo/vitepress-plugin-exercices",
+  "name": "@matinfo/vitepress-plugin-exercices-form",
   "version": "1.0.0",
   "description": "VitePress plugin for interactive exercises with answer boxes and client-side PDF generation",
   "license": "GPL-3.0-only",
   "type": "module",
-  "main": "./dist/vitepress-plugin-exercices.umd.cjs",
-  "module": "./dist/vitepress-plugin-exercices.js",
+  "main": "./dist/vitepress-plugin-exercices-form.umd.cjs",
+  "module": "./dist/vitepress-plugin-exercices-form.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/vitepress-plugin-exercices.js",
-      "require": "./dist/vitepress-plugin-exercices.umd.cjs",
-      "default": "./dist/vitepress-plugin-exercices.js"
+      "import": "./dist/vitepress-plugin-exercices-form.js",
+      "require": "./dist/vitepress-plugin-exercices-form.umd.cjs",
+      "default": "./dist/vitepress-plugin-exercices-form.js"
     },
     "./package.json": "./package.json"
   },
@@ -49,7 +49,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/matinfo/vitepress-plugin-exercices.git"
+    "url": "git+https://github.com/matinfo/vitepress-plugin-exercices-form.git"
   },
   "keywords": [
     "vitepress",

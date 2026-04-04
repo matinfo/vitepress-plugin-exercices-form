@@ -5,7 +5,7 @@ let stylesInjected = false
 export function ensureStylesInjected(): void {
   if (typeof document === "undefined") return
   if (stylesInjected) return
-  const styleId = "vitepress-plugin-exercices-styles"
+  const styleId = "vitepress-plugin-exercices-form-styles"
   if (document.getElementById(styleId)) {
     stylesInjected = true
     return

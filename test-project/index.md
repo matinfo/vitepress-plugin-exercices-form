@@ -3,7 +3,7 @@ layout: home
 hero:
   name: "Exercise Plugin"
   text: "Test Harness"
-  tagline: Test the vitepress-plugin-exercices plugin
+  tagline: Test the vitepress-plugin-exercices-form plugin
   actions:
     - theme: brand
       text: Sample Exercise

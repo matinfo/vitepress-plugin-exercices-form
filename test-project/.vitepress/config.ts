@@ -1,9 +1,9 @@
 import { defineConfig } from "vitepress"
-import { exerciseMarkdownPlugin, exerciceVitePlugin } from "vitepress-plugin-exercices"
+import { exerciseMarkdownPlugin, exerciceVitePlugin } from "vitepress-plugin-exercices-form"
 
 export default defineConfig({
   title: "Exercise Test Project",
-  description: "Local test harness for vitepress-plugin-exercices",
+  description: "Local test harness for vitepress-plugin-exercices-form",
 
   markdown: {
     config(md) {

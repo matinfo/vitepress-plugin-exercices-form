@@ -1,5 +1,5 @@
 import DefaultTheme from "vitepress/theme"
-import { enhanceAppWithExercises } from "vitepress-plugin-exercices"
+import { enhanceAppWithExercises } from "vitepress-plugin-exercices-form"
 import type { Theme } from "vitepress"
 
 export default {

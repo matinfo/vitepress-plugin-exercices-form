@@ -24,7 +24,7 @@ export { AnswerBox, ExercisePdfButton }
  */
 export function exerciceVitePlugin(): Plugin {
   return {
-    name: "vitepress-plugin-exercices",
+    name: "vitepress-plugin-exercices-form",
     config() {
       return {
         ssr: {
@@ -43,7 +43,7 @@ export function exerciceVitePlugin(): Plugin {
  *
  * @example
  * // .vitepress/theme/index.ts
- * import { enhanceAppWithExercises } from '@matinfo/vitepress-plugin-exercices'
+ * import { enhanceAppWithExercises } from '@matinfo/vitepress-plugin-exercices-form'
  * export default {
  *   enhanceApp({ app }) {
  *     enhanceAppWithExercises(app, { lang: 'fr' })

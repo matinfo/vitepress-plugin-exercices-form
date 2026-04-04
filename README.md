@@ -1,4 +1,4 @@
-# @matinfo/vitepress-plugin-exercices
+# @matinfo/vitepress-plugin-exercices-form
 
 A VitePress plugin that adds interactive exercise pages with answer boxes and client-side PDF generation.
 
@@ -13,7 +13,7 @@ A VitePress plugin that adds interactive exercise pages with answer boxes and cl
 ## Installation
 
 ```bash
-npm install @matinfo/vitepress-plugin-exercices html2pdf.js
+npm install @matinfo/vitepress-plugin-exercices-form html2pdf.js
 ```
 
 > `html2pdf.js` is a required peer dependency for PDF generation.
@@ -26,7 +26,7 @@ In `.vitepress/config.ts`:
 
 ```ts
 import { defineConfig } from "vitepress"
-import { exerciseMarkdownPlugin, exerciceVitePlugin } from "@matinfo/vitepress-plugin-exercices"
+import { exerciseMarkdownPlugin, exerciceVitePlugin } from "@matinfo/vitepress-plugin-exercices-form"
 
 export default defineConfig({
   markdown: {
@@ -46,7 +46,7 @@ In `.vitepress/theme/index.ts`:
 
 ```ts
 import DefaultTheme from "vitepress/theme"
-import { enhanceAppWithExercises } from "@matinfo/vitepress-plugin-exercices"
+import { enhanceAppWithExercises } from "@matinfo/vitepress-plugin-exercices-form"
 
 export default {
   extends: DefaultTheme,

@@ -13,9 +13,9 @@ export default defineConfig({
       entry: resolve(__dirname, "src/index.ts"),
       name: "VitepressPluginExercices",
       fileName: (format) => {
-        if (format === "es") return "vitepress-plugin-exercices.js"
-        if (format === "umd") return "vitepress-plugin-exercices.umd.cjs"
-        return `vitepress-plugin-exercices.${format}`
+        if (format === "es") return "vitepress-plugin-exercices-form.js"
+        if (format === "umd") return "vitepress-plugin-exercices-form.umd.cjs"
+        return `vitepress-plugin-exercices-form.${format}`
       },
       formats: ["es", "umd"],
     },

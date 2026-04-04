@@ -1,5 +1,5 @@
 {
-  "name": "vitepress-plugin-exercices-test",
+  "name": "vitepress-plugin-exercices-form-test",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "vitepress": "^1.6.4",
-    "vitepress-plugin-exercices": "file:..",
+    "vitepress-plugin-exercices-form": "file:..",
     "vue": "^3.5.32",
     "html2pdf.js": "^0.10.2"
   },
