@@ -1,0 +1,83 @@
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint --if-present
+
+      - name: Audit dependencies
+        run: npm audit --omit=dev || true
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm run test --if-present
+
+      - name: Check tag matches package.json version
+        shell: bash
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+
+          echo "package.json version: $PACKAGE_VERSION"
+          echo "git tag version:      $TAG_VERSION"
+
+          if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ]; then
+            echo "Error: git tag does not match package.json version"
+            exit 1
+          fi
+
+      - name: Check whether version already exists on npm
+        id: npm_check
+        shell: bash
+        run: |
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+
+          if npm view "${PACKAGE_NAME}@${PACKAGE_VERSION}" version >/dev/null 2>&1; then
+            echo "already_published=true" >> "$GITHUB_OUTPUT"
+            echo "Version already exists on npm."
+          else
+            echo "already_published=false" >> "$GITHUB_OUTPUT"
+            echo "Version does not exist on npm yet."
+          fi
+
+      - name: Publish to npm
+        if: steps.npm_check.outputs.already_published == 'false'
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Skip publish
+        if: steps.npm_check.outputs.already_published == 'true'
+        run: echo "Skipping publish because this version is already on npm."
