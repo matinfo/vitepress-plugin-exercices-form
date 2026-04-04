@@ -25,7 +25,7 @@ export interface ExercisePluginOptions {
   /** localStorage key prefix (default: 'exercise-') */
   storagePrefix?: string
   /** Default editor mode for answer boxes */
-  defaultMode?: "text" | "code"
+  defaultMode?: 'text' | 'code'
   /** Show mode toggle buttons (default: true) */
   enableModeToggle?: boolean
   /** Tab size in code mode (default: 2) */

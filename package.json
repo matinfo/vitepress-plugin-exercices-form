@@ -1,52 +1,10 @@
 {
   "name": "@matinfo/vitepress-plugin-exercices-form",
+  "type": "module",
   "version": "1.0.0",
   "description": "VitePress plugin for interactive exercises with answer boxes and client-side PDF generation",
+  "author": "matinfo",
   "license": "GPL-3.0-only",
-  "type": "module",
-  "main": "./dist/vitepress-plugin-exercices-form.umd.cjs",
-  "module": "./dist/vitepress-plugin-exercices-form.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/vitepress-plugin-exercices-form.js",
-      "require": "./dist/vitepress-plugin-exercices-form.umd.cjs",
-      "default": "./dist/vitepress-plugin-exercices-form.js"
-    },
-    "./package.json": "./package.json"
-  },
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "build": "vite build",
-    "typecheck": "vue-tsc",
-    "pack": "npm pack",
-    "test:install": "npm run build && npm run pack && cd test-project && npm install",
-    "test:dev": "npm run test:install && cd test-project && npm run docs:dev",
-    "test:dev:only": "cd test-project && npm run docs:dev",
-    "test:build": "npm run test:install && cd test-project && npm run docs:build"
-  },
-  "peerDependencies": {
-    "vue": "^3.0.0",
-    "vitepress": "^1.0.0"
-  },
-  "devDependencies": {
-    "@types/markdown-it": "^14.1.2",
-    "@types/node": "^22.19.17",
-    "@vitejs/plugin-vue": "^5.2.4",
-    "markdown-it": "^14.1.1",
-    "typescript": "^5.9.3",
-    "vite": "^6.4.1",
-    "vite-plugin-dts": "^4.5.4",
-    "vitepress": "^1.6.4",
-    "vue": "^3.5.32",
-    "vue-tsc": "^2.2.12"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/matinfo/vitepress-plugin-exercices-form.git"
@@ -59,5 +17,51 @@
     "pdf",
     "education"
   ],
-  "author": "matinfo"
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/vitepress-plugin-exercices-form.js",
+      "require": "./dist/vitepress-plugin-exercices-form.umd.cjs",
+      "default": "./dist/vitepress-plugin-exercices-form.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/vitepress-plugin-exercices-form.umd.cjs",
+  "module": "./dist/vitepress-plugin-exercices-form.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "vite build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "vue-tsc",
+    "pack": "npm pack",
+    "test:install": "npm run build && npm run pack && cd test-project && npm install",
+    "test:dev": "npm run test:install && cd test-project && npm run docs:dev",
+    "test:dev:only": "cd test-project && npm run docs:dev",
+    "test:build": "npm run test:install && cd test-project && npm run docs:build"
+  },
+  "peerDependencies": {
+    "vitepress": "^1.0.0",
+    "vue": "^3.0.0"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^8.0.0",
+    "@types/markdown-it": "^14.1.2",
+    "@types/node": "^22.19.17",
+    "@vitejs/plugin-vue": "^5.2.4",
+    "eslint": "^10.2.0",
+    "markdown-it": "^14.1.1",
+    "typescript": "^5.9.3",
+    "vite": "^6.4.1",
+    "vite-plugin-dts": "^4.5.4",
+    "vitepress": "^1.6.4",
+    "vue": "^3.5.32",
+    "vue-tsc": "^2.2.12"
+  }
 }

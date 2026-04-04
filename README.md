@@ -35,20 +35,20 @@ npm install @matinfo/vitepress-plugin-exercices-form html2pdf.js
 In `.vitepress/config.ts`:
 
 ```ts
-import { defineConfig } from "vitepress"
 import {
-  exerciseMarkdownPlugin,
   exerciceVitePlugin,
-} from "@matinfo/vitepress-plugin-exercices-form"
+  exerciseMarkdownPlugin,
+} from '@matinfo/vitepress-plugin-exercices-form'
+import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   markdown: {
     config(md) {
-      md.use(exerciseMarkdownPlugin)  // parses :::answer-box fences
+      md.use(exerciseMarkdownPlugin) // parses :::answer-box fences
     },
   },
   vite: {
-    plugins: [exerciceVitePlugin()],  // handles html2pdf.js SSR exclusion
+    plugins: [exerciceVitePlugin()], // handles html2pdf.js SSR exclusion
   },
 })
 ```
@@ -58,13 +58,13 @@ export default defineConfig({
 In `.vitepress/theme/index.ts`:
 
 ```ts
-import DefaultTheme from "vitepress/theme"
-import { enhanceAppWithExercises } from "@matinfo/vitepress-plugin-exercices-form"
+import { enhanceAppWithExercises } from '@matinfo/vitepress-plugin-exercices-form'
+import DefaultTheme from 'vitepress/theme'
 
 export default {
   extends: DefaultTheme,
   enhanceApp({ app }) {
-    enhanceAppWithExercises(app, { lang: "fr" })
+    enhanceAppWithExercises(app, { lang: 'fr' })
   },
 }
 ```
@@ -126,31 +126,31 @@ This content is hidden in student documents but visible in corrections.
 
 ```ts
 // markdown-it plugin — parses :::answer-box fences
-exerciseMarkdownPlugin(md: MarkdownIt): void
+function exerciseMarkdownPlugin(md: MarkdownIt): void
 
 // Vite plugin — excludes html2pdf.js from SSR
-exerciceVitePlugin(): Plugin
+function exerciceVitePlugin(): Plugin
 
 // registers AnswerBox and ExercisePdfButton Vue components
-enhanceAppWithExercises(app: App, options?: ExercisePluginOptions): void
+function enhanceAppWithExercises(app: App, options?: ExercisePluginOptions): void
 
 // returns the locale object for a given language code
-getLocale(lang: string): ExerciseLocale
+function getLocale(lang: string): ExerciseLocale
 
 // built-in locale strings (keys: "en", "fr", "de")
-locales: Record<string, ExerciseLocale>
+declare const locales: Record<string, ExerciseLocale>
 
 // Pinia store — per-page answer state (use inside Vue components)
-useAnswerStore(): AnswerStore
+function useAnswerStore(): AnswerStore
 ```
 
 ### Types
 
 ```ts
 interface ExercisePluginOptions {
-  lang?: "en" | "fr" | "de"
+  lang?: 'en' | 'fr' | 'de'
   storagePrefix?: string
-  defaultMode?: "text" | "code"
+  defaultMode?: 'text' | 'code'
   enableModeToggle?: boolean
   tabSize?: number
   dateLocale?: string

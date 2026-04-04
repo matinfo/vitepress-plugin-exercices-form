@@ -1,20 +1,20 @@
 {
   "name": "vitepress-plugin-exercices-form-test",
+  "type": "module",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "docs:dev": "vitepress dev",
     "docs:build": "vitepress build",
     "docs:preview": "vitepress preview"
   },
   "dependencies": {
+    "html2pdf.js": "^0.10.2",
     "vitepress": "^1.6.4",
     "vitepress-plugin-exercices-form": "file:..",
-    "vue": "^3.5.32",
-    "html2pdf.js": "^0.10.2"
-  },
-  "engines": {
-    "node": ">=18.0.0"
+    "vue": "^3.5.32"
   }
 }

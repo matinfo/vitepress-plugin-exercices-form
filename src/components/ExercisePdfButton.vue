@@ -1,20 +1,24 @@
 <script setup lang="ts">
-import { ref, inject } from "vue"
-import { useAnswerStore } from "../composables/useAnswerStore"
-import type { ExerciseLocale } from "../types/exercise"
+import type { ExerciseLocale } from '../types/exercise'
+import { inject, ref } from 'vue'
+import { useAnswerStore } from '../composables/useAnswerStore'
 
 const props = defineProps<{
   exerciseId: string
   title: string
   answerCount: number
 }>()
+const RE_H12 = /^h[12]$/
+const RE_H13 = /^h[1-3]$/
+const RE_BODY = /<body[^>]*>([\s\S]*)<\/body>/i
+const RE_STYLE = /<style>([\s\S]*?)<\/style>/i
 
-const locale = inject<ExerciseLocale>("exercise-locale")!
-const dateLocale = inject<string>("exercise-date-locale", "en")
-const storagePrefix = inject<string>("exercise-storage-prefix", "exercise-")
+const locale = inject<ExerciseLocale>('exercise-locale')!
+const dateLocale = inject<string>('exercise-date-locale', 'en')
+const storagePrefix = inject<string>('exercise-storage-prefix', 'exercise-')
 
-const studentName = ref("")
-const studentClass = ref("")
+const studentName = ref('')
+const studentClass = ref('')
 const generating = ref(false)
 const showValidation = ref(false)
 
@@ -22,47 +26,51 @@ const { getAnswersForExercise, clearExercise } = useAnswerStore()
 
 function escHtml(s: string): string {
   return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
 }
 
 function buildPdfHtml(): string {
   const answers = getAnswersForExercise(props.exerciseId)
   const date = new Date().toLocaleDateString(dateLocale, {
-    year: "numeric", month: "long", day: "numeric",
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
   })
 
-  const contentEl = document.querySelector(".vp-doc")
-  if (!contentEl) return ""
+  const contentEl = document.querySelector('.vp-doc')
+  if (!contentEl)
+    return ''
 
   const clone = contentEl.cloneNode(true) as HTMLElement
 
   // Strip VitePress scoped classes
-  clone.className = ""
-  clone.querySelectorAll("[class]").forEach(el => {
+  clone.className = ''
+  clone.querySelectorAll('[class]').forEach((el) => {
     const keep = Array.from(el.classList).filter(c =>
-      c.startsWith("vpe-") || c === "exercise-pdf-section"
+      c.startsWith('vpe-') || c === 'exercise-pdf-section',
     )
-    el.className = keep.join(" ")
+    el.className = keep.join(' ')
   })
 
   // Remove the PDF button itself
-  clone.querySelectorAll(".exercise-pdf-section").forEach(el => el.remove())
+  clone.querySelectorAll('.exercise-pdf-section').forEach(el => el.remove())
 
   // Replace answer box components with printed answers
-  clone.querySelectorAll(".vpe-answer-box").forEach(el => {
-    const textarea = el.querySelector("textarea")
-    if (!textarea) return
+  clone.querySelectorAll('.vpe-answer-box').forEach((el) => {
+    const textarea = el.querySelector('textarea')
+    if (!textarea)
+      return
 
     const id = textarea.id
-    const answer = answers[id] ?? ""
-    const isCode = textarea.dataset.mode === "code" ||
-      (typeof window !== "undefined" && localStorage.getItem(storagePrefix + "mode-" + id) === "code")
+    const answer = answers[id] ?? ''
+    const isCode = textarea.dataset.mode === 'code'
+      || (typeof window !== 'undefined' && localStorage.getItem(`${storagePrefix}mode-${id}`) === 'code')
 
-    const answerDiv = document.createElement("div")
-    answerDiv.className = isCode ? "answer-printed answer-code" : "answer-printed"
+    const answerDiv = document.createElement('div')
+    answerDiv.className = isCode ? 'answer-printed answer-code' : 'answer-printed'
     answerDiv.textContent = answer || locale.noAnswer
 
     el.replaceWith(answerDiv)
@@ -71,12 +79,13 @@ function buildPdfHtml(): string {
   // Filter: keep only questions + answers
   const keepSet = new WeakSet<Node>()
 
-  clone.querySelectorAll(".answer-printed").forEach(answerEl => {
+  clone.querySelectorAll('.answer-printed').forEach((answerEl) => {
     keepSet.add(answerEl)
     let prev = answerEl.previousElementSibling
     while (prev) {
       const tag = prev.tagName.toLowerCase()
-      if (/^h[1-2]$/.test(tag) || prev.classList.contains("answer-printed")) break
+      if (RE_H12.test(tag) || prev.classList.contains('answer-printed'))
+        break
       keepSet.add(prev)
       prev = prev.previousElementSibling
     }
@@ -96,14 +105,15 @@ function buildPdfHtml(): string {
   pruneNode(clone)
 
   // Wrap question + answer into qa-blocks for page break avoidance
-  clone.querySelectorAll(".answer-printed").forEach(answerEl => {
-    const wrapper = document.createElement("div")
-    wrapper.className = "qa-block"
+  clone.querySelectorAll('.answer-printed').forEach((answerEl) => {
+    const wrapper = document.createElement('div')
+    wrapper.className = 'qa-block'
 
     const siblings: Element[] = []
     let cur = answerEl.previousElementSibling
     while (cur) {
-      if (cur.classList.contains("answer-printed") || cur.classList.contains("qa-block")) break
+      if (cur.classList.contains('answer-printed') || cur.classList.contains('qa-block'))
+        break
       siblings.unshift(cur)
       cur = cur.previousElementSibling
     }
@@ -111,14 +121,16 @@ function buildPdfHtml(): string {
     const questionEls: Element[] = []
     for (let i = siblings.length - 1; i >= 0; i--) {
       const tag = siblings[i].tagName.toLowerCase()
-      if (/^h[1-3]$/.test(tag)) break
+      if (RE_H13.test(tag))
+        break
       questionEls.unshift(siblings[i])
     }
 
     if (questionEls.length > 0) {
       answerEl.parentNode?.insertBefore(wrapper, questionEls[0])
       for (const qe of questionEls) wrapper.appendChild(qe)
-    } else {
+    }
+    else {
       answerEl.parentNode?.insertBefore(wrapper, answerEl)
     }
     wrapper.appendChild(answerEl)
@@ -191,61 +203,67 @@ function buildPdfHtml(): string {
 
 async function generatePdf(): Promise<void> {
   showValidation.value = true
-  if (!studentName.value.trim() || !studentClass.value.trim()) return
+  if (!studentName.value.trim() || !studentClass.value.trim())
+    return
 
   generating.value = true
   try {
     // Dynamic import - html2pdf.js must be in consumer's dependencies
     // Use Function constructor to create a truly dynamic import that bundlers cannot statically analyze
-    const dynamicImport = new Function("m", "return import(m)")
-    const html2pdfModule = await dynamicImport("html2pdf.js")
+    // eslint-disable-next-line no-new-func
+    const dynamicImport = new Function('m', 'return import(m)')
+    const html2pdfModule = await dynamicImport('html2pdf.js')
     const html2pdf = html2pdfModule.default
 
     const htmlContent = buildPdfHtml()
-    const bodyMatch = htmlContent.match(/<body[^>]*>([\s\S]*)<\/body>/i)
-    const styleMatch = htmlContent.match(/<style>([\s\S]*?)<\/style>/i)
+    const bodyMatch = htmlContent.match(RE_BODY)
+    const styleMatch = htmlContent.match(RE_STYLE)
 
-    const container = document.createElement("div")
+    const container = document.createElement('div')
     if (styleMatch) {
-      const style = document.createElement("style")
+      const style = document.createElement('style')
       style.textContent = styleMatch[1]
       container.appendChild(style)
     }
-    const content = document.createElement("div")
+    const content = document.createElement('div')
     content.innerHTML = bodyMatch ? bodyMatch[1] : htmlContent
     container.appendChild(content)
 
-    container.style.cssText = "position: fixed; left: 0; top: 0; width: 210mm; z-index: -9999; opacity: 0; pointer-events: none;"
+    container.style.cssText = 'position: fixed; left: 0; top: 0; width: 210mm; z-index: -9999; opacity: 0; pointer-events: none;'
     document.body.appendChild(container)
 
     await new Promise(r => setTimeout(r, 100))
 
     const opt = {
       margin: [15, 15, 15, 15],
-      filename: `${props.exerciseId}-${studentName.value.trim().replace(/\s+/g, "_")}.pdf`,
-      image: { type: "jpeg", quality: 0.95 },
+      filename: `${props.exerciseId}-${studentName.value.trim().replace(/\s+/g, '_')}.pdf`,
+      image: { type: 'jpeg', quality: 0.95 },
       html2canvas: { scale: 2, useCORS: true, logging: false, windowWidth: 794 },
-      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" as const },
-      pagebreak: { mode: ["avoid-all", "css"], avoid: [".qa-block", ".answer-printed"] },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const },
+      pagebreak: { mode: ['avoid-all', 'css'], avoid: ['.qa-block', '.answer-printed'] },
     }
 
     const worker = html2pdf().set(opt).from(content)
-    const pdf = await worker.toPdf().get("pdf")
-    const blob = pdf.output("blob")
+    const pdf = await worker.toPdf().get('pdf')
+    const blob = pdf.output('blob')
 
     const url = URL.createObjectURL(blob)
-    window.open(url, "_blank")
+    window.open(url, '_blank')
 
     document.body.removeChild(container)
-  } catch (err) {
-    console.error("PDF generation failed:", err)
+  }
+  catch (err) {
+    console.error('PDF generation failed:', err)
+    // eslint-disable-next-line no-alert
     alert(locale.pdfError)
-  } finally {
+  }
+  finally {
     generating.value = false
   }
 }
 
 function handleClear(): void {
+  // eslint-disable-next-line no-alert
   if (confirm(locale.clearConfirm)) {
     clearExercise(props.exerciseId)
     window.location.reload()
@@ -255,7 +273,7 @@ function handleClear(): void {
 
 <template>
   <div class="exercise-pdf-section">
-    <hr />
+    <hr>
     <h3>{{ locale.pdfTitle }}</h3>
     <div class="vpe-student-fields">
       <div class="vpe-field">
@@ -267,7 +285,7 @@ function handleClear(): void {
           :placeholder="locale.namePlaceholder"
           :class="{ invalid: showValidation && !studentName.trim() }"
           required
-        />
+        >
         <span v-if="showValidation && !studentName.trim()" class="vpe-error-msg">{{ locale.requiredField }}</span>
       </div>
       <div class="vpe-field">
@@ -279,7 +297,7 @@ function handleClear(): void {
           :placeholder="locale.classPlaceholder"
           :class="{ invalid: showValidation && !studentClass.trim() }"
           required
-        />
+        >
         <span v-if="showValidation && !studentClass.trim()" class="vpe-error-msg">{{ locale.requiredField }}</span>
       </div>
     </div>

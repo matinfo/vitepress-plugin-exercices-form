@@ -1,9 +1,9 @@
-import { defineConfig } from "vitepress"
-import { exerciseMarkdownPlugin, exerciceVitePlugin } from "vitepress-plugin-exercices-form"
+import { defineConfig } from 'vitepress'
+import { exerciceVitePlugin, exerciseMarkdownPlugin } from 'vitepress-plugin-exercices-form'
 
 export default defineConfig({
-  title: "Exercise Test Project",
-  description: "Local test harness for vitepress-plugin-exercices-form",
+  title: 'Exercise Test Project',
+  description: 'Local test harness for vitepress-plugin-exercices-form',
 
   markdown: {
     config(md) {
@@ -17,11 +17,11 @@ export default defineConfig({
 
   themeConfig: {
     nav: [
-      { text: "Sample Exercise", link: "/sample-exercise" },
+      { text: 'Sample Exercise', link: '/sample-exercise' },
     ],
     sidebar: [
-      { text: "Home", link: "/" },
-      { text: "Sample Exercise", link: "/sample-exercise" },
+      { text: 'Home', link: '/' },
+      { text: 'Sample Exercise', link: '/sample-exercise' },
     ],
   },
 })
