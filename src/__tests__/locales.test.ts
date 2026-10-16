@@ -8,10 +8,24 @@ describe('locales', () => {
 
   it('each locale has all required keys', () => {
     const requiredKeys = [
-      'textMode', 'codeMode', 'textPlaceholder', 'codePlaceholder',
-      'generatePdf', 'generating', 'nameLabel', 'classLabel', 'dateLabel',
-      'namePlaceholder', 'classPlaceholder', 'required', 'requiredField',
-      'clearAnswers', 'clearConfirm', 'noAnswer', 'pdfError', 'pdfTitle',
+      'textMode',
+      'codeMode',
+      'textPlaceholder',
+      'codePlaceholder',
+      'generatePdf',
+      'generating',
+      'nameLabel',
+      'classLabel',
+      'dateLabel',
+      'namePlaceholder',
+      'classPlaceholder',
+      'required',
+      'requiredField',
+      'clearAnswers',
+      'clearConfirm',
+      'noAnswer',
+      'pdfError',
+      'pdfTitle',
     ]
     for (const [lang, locale] of Object.entries(locales)) {
       for (const key of requiredKeys) {

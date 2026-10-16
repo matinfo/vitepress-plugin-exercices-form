@@ -36,8 +36,8 @@ describe('index exports', () => {
     expect(mod.ExercisePdfButton).toBeDefined()
   })
 
-  it('exerciceVitePlugin returns a Vite plugin with ssr config', () => {
-    const { exerciceVitePlugin } = require('../index')
+  it('exerciceVitePlugin returns a Vite plugin with ssr config', async () => {
+    const { exerciceVitePlugin } = await import('../index')
     const plugin = exerciceVitePlugin()
     expect(plugin.name).toBe('vitepress-plugin-exercices-form')
     const config = plugin.config()
