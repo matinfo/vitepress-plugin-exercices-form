@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ExerciseLocale } from '../types/exercise'
 import { inject, ref } from 'vue'
-import { useAnswerStore } from '../composables/useAnswerStore'
+import { isEmptyAnswer, parseAnswer, useAnswerStore } from '../composables/useAnswerStore'
 
 const props = defineProps<{
   exerciseId: string
@@ -32,6 +32,71 @@ function escHtml(s: string): string {
     .replace(/"/g, '&quot;')
 }
 
+function renderTextAnswer(el: Element, answers: Record<string, string>): HTMLElement | null {
+  const textarea = el.querySelector('textarea')
+  if (!textarea)
+    return null
+
+  const id = textarea.id
+  const answer = answers[id] ?? ''
+  const isCode = textarea.dataset.mode === 'code'
+    || (typeof window !== 'undefined' && localStorage.getItem(`${storagePrefix}mode-${id}`) === 'code')
+
+  const answerDiv = document.createElement('div')
+  answerDiv.className = isCode ? 'answer-printed answer-code' : 'answer-printed'
+  answerDiv.textContent = answer || locale.noAnswer
+  return answerDiv
+}
+
+function renderCheckboxAnswer(el: HTMLElement, answers: Record<string, string>): HTMLElement {
+  const answer = answers[el.id] ?? ''
+  const answerDiv = document.createElement('div')
+  answerDiv.className = 'answer-printed answer-checklist'
+  if (isEmptyAnswer('checkbox', answer)) {
+    answerDiv.textContent = locale.noAnswer
+    return answerDiv
+  }
+  const state = parseAnswer<boolean[]>(answer) ?? []
+  el.querySelectorAll('.vpe-checkbox-item').forEach((item, i) => {
+    const line = document.createElement('div')
+    line.className = 'answer-check-item'
+    const box = document.createElement('span')
+    box.className = 'answer-check-glyph'
+    box.textContent = state[i] === true ? '\u2611' : '\u2610'
+    const label = document.createElement('span')
+    label.textContent = item.textContent?.trim() ?? ''
+    line.append(box, label)
+    answerDiv.appendChild(line)
+  })
+  return answerDiv
+}
+
+function renderTableAnswer(el: HTMLElement, answers: Record<string, string>): HTMLElement {
+  const answer = answers[el.id] ?? ''
+  const answerDiv = document.createElement('div')
+  answerDiv.className = 'answer-printed answer-table'
+  if (isEmptyAnswer('table', answer)) {
+    answerDiv.textContent = locale.noAnswer
+    return answerDiv
+  }
+  const grid = parseAnswer<string[][]>(answer) ?? []
+  const table = document.createElement('table')
+  const headRow = table.createTHead().insertRow()
+  el.querySelectorAll('th').forEach((th) => {
+    const cell = document.createElement('th')
+    cell.textContent = th.textContent?.trim() ?? ''
+    headRow.appendChild(cell)
+  })
+  const body = table.createTBody()
+  for (const row of grid) {
+    const tr = body.insertRow()
+    for (const value of row)
+      tr.insertCell().textContent = String(value ?? '')
+  }
+  answerDiv.appendChild(table)
+  return answerDiv
+}
+
 function buildPdfHtml(): string {
   const answers = getAnswersForExercise(props.exerciseId)
   const date = new Date().toLocaleDateString(dateLocale, {
@@ -60,20 +125,14 @@ function buildPdfHtml(): string {
 
   // Replace answer box components with printed answers
   clone.querySelectorAll('.vpe-answer-box').forEach((el) => {
-    const textarea = el.querySelector('textarea')
-    if (!textarea)
-      return
-
-    const id = textarea.id
-    const answer = answers[id] ?? ''
-    const isCode = textarea.dataset.mode === 'code'
-      || (typeof window !== 'undefined' && localStorage.getItem(`${storagePrefix}mode-${id}`) === 'code')
-
-    const answerDiv = document.createElement('div')
-    answerDiv.className = isCode ? 'answer-printed answer-code' : 'answer-printed'
-    answerDiv.textContent = answer || locale.noAnswer
-
-    el.replaceWith(answerDiv)
+    const type = (el as HTMLElement).dataset.vpeType
+    const answerDiv = type === 'checkbox'
+      ? renderCheckboxAnswer(el as HTMLElement, answers)
+      : type === 'table'
+        ? renderTableAnswer(el as HTMLElement, answers)
+        : renderTextAnswer(el, answers)
+    if (answerDiv)
+      el.replaceWith(answerDiv)
   })
 
   // Filter: keep only questions + answers
@@ -185,6 +244,16 @@ function buildPdfHtml(): string {
       font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
       font-size: 10pt; white-space: pre; tab-size: 2;
     }
+    .answer-printed.answer-checklist { white-space: normal; }
+    .answer-check-item { display: flex; gap: 8px; align-items: flex-start; margin: 2px 0; }
+    .answer-check-glyph { font-family: "Segoe UI Symbol", "Apple Symbols", "DejaVu Sans", sans-serif; font-size: 13pt; line-height: 1.3; }
+    .answer-printed.answer-table {
+      white-space: normal; padding: 0; border: none;
+      break-inside: auto; page-break-inside: auto;
+    }
+    .answer-table table { table-layout: fixed; margin: 0; }
+    .answer-table th, .answer-table td { word-break: break-word; overflow-wrap: anywhere; white-space: pre-wrap; height: 26px; }
+    .answer-table tr { break-inside: avoid; page-break-inside: avoid; }
     .qa-block { break-inside: avoid; page-break-inside: avoid; }
     pre { break-inside: avoid; page-break-inside: avoid; }
   </style>

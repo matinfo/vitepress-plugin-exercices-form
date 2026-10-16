@@ -52,4 +52,36 @@ describe('exercisePdfButton content filtering', () => {
     expect(html).toContain('prendre l\'avion')
     expect(html).toContain('Énoncé 4.')
   })
+
+  it('prints checklist glyphs and table cells', async () => {
+    vi.stubGlobal('open', vi.fn())
+    URL.createObjectURL = vi.fn(() => 'blob:x')
+    const { useAnswerStore } = await import('../composables/useAnswerStore')
+    const store = useAnswerStore()
+    store.setAnswer('ex-q1', '[true,false]')
+    store.setAnswer('ex-q2', '[["a","b"],["",""]]')
+    const html = await generate(
+      `<p>Q1</p>
+       <div id="ex-q1" class="vpe-answer-box" data-vpe-type="checkbox">
+         <label class="vpe-checkbox-item"><input type="checkbox"><span>First</span></label>
+         <label class="vpe-checkbox-item"><input type="checkbox"><span>Second</span></label>
+       </div>
+       <p>Q2</p>
+       <div id="ex-q2" class="vpe-answer-box" data-vpe-type="table"><table><thead><tr><th>H1</th><th>H2</th></tr></thead></table></div>`,
+    )
+    expect(html).toContain('\u2611')
+    expect(html).toContain('\u2610')
+    expect(html).toContain('answer-table')
+    expect(html).toContain('<td>a</td>')
+    expect(html).toContain('<th>H2</th>')
+  })
+
+  it('prints noAnswer for empty structured answers', async () => {
+    vi.stubGlobal('open', vi.fn())
+    URL.createObjectURL = vi.fn(() => 'blob:x')
+    const html = await generate(
+      `<p>Q1</p><div id="ex-q9" class="vpe-answer-box" data-vpe-type="checkbox"><label class="vpe-checkbox-item"><span>A</span></label></div>`,
+    )
+    expect(html).toContain('(no answer)')
+  })
 })
