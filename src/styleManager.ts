@@ -2,6 +2,10 @@ import exerciseCssInline from './exercise.css?inline'
 
 let stylesInjected = false
 
+export function resetStylesInjectionForTest(): void {
+  stylesInjected = false
+}
+
 export function ensureStylesInjected(): void {
   if (typeof document === 'undefined')
     return

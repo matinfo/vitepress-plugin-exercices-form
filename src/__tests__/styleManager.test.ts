@@ -1,10 +1,11 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { ensureStylesInjected } from '../styleManager'
+import { ensureStylesInjected, resetStylesInjectionForTest } from '../styleManager'
 
 describe('ensureStylesInjected', () => {
   afterEach(() => {
     const el = document.getElementById('vitepress-plugin-exercices-form-styles')
     el?.remove()
+    resetStylesInjectionForTest()
   })
 
   it('injects a <style> element into <head>', () => {
