@@ -1,6 +1,6 @@
 import MarkdownIt from 'markdown-it'
 import { describe, expect, it } from 'vitest'
-import { exerciseMarkdownPlugin } from '../src/md-plugin'
+import { exerciseMarkdownPlugin } from '../md-plugin'
 
 function render(src: string, env: Record<string, unknown> = {}): string {
   const md = new MarkdownIt()

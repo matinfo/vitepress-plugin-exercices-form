@@ -1,3 +1,4 @@
+import type { ExerciseLocale } from '../types/exercise'
 import { describe, expect, it } from 'vitest'
 import { getLocale, locales } from '../locales'
 
@@ -7,7 +8,7 @@ describe('locales', () => {
   })
 
   it('each locale has all required keys', () => {
-    const requiredKeys = [
+    const requiredKeys: Array<keyof ExerciseLocale> = [
       'textMode',
       'codeMode',
       'textPlaceholder',
@@ -30,7 +31,7 @@ describe('locales', () => {
     for (const [lang, locale] of Object.entries(locales)) {
       for (const key of requiredKeys) {
         expect(locale, `${lang} missing "${key}"`).toHaveProperty(key)
-        expect((locale as Record<string, string>)[key], `${lang}.${key} is empty`).toBeTruthy()
+        expect(locale[key], `${lang}.${key} is empty`).toBeTruthy()
       }
     }
   })

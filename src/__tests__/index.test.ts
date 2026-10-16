@@ -1,4 +1,22 @@
+import type { ConfigEnv, Plugin, UserConfig } from 'vite'
 import { describe, expect, it } from 'vitest'
+
+async function readPluginConfig(plugin: Plugin): Promise<UserConfig> {
+  const env: ConfigEnv = {
+    command: 'build',
+    mode: 'test',
+    isSsrBuild: false,
+    isPreview: false,
+  }
+
+  if (!plugin.config)
+    throw new Error('Plugin has no config hook')
+
+  if (typeof plugin.config === 'function')
+    return await plugin.config({}, env) ?? {}
+
+  return await plugin.config.handler({}, env) ?? {}
+}
 
 describe('index exports', () => {
   it('exports exerciseMarkdownPlugin', async () => {
@@ -40,8 +58,8 @@ describe('index exports', () => {
     const { exerciceVitePlugin } = await import('../index')
     const plugin = exerciceVitePlugin()
     expect(plugin.name).toBe('vitepress-plugin-exercices-form')
-    const config = plugin.config()
-    expect(config.ssr.noExternal).toContain('html2pdf.js')
-    expect(config.optimizeDeps.exclude).toContain('html2pdf.js')
+    const config = await readPluginConfig(plugin)
+    expect(config.ssr?.noExternal).toContain('html2pdf.js')
+    expect(config.optimizeDeps?.exclude).toContain('html2pdf.js')
   })
 })
