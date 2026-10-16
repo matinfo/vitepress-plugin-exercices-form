@@ -48,9 +48,12 @@ describe('index exports', () => {
     expect(mod.useAnswerStore).toBeDefined()
   })
 
-  it('exports AnswerBox and ExercisePdfButton components', async () => {
+  it('exports answer components and ExercisePdfButton', async () => {
     const mod = await import('../index')
     expect(mod.AnswerBox).toBeDefined()
+    expect(mod.AnswerCheckbox).toBeDefined()
+    expect(mod.AnswerRadio).toBeDefined()
+    expect(mod.AnswerTable).toBeDefined()
     expect(mod.ExercisePdfButton).toBeDefined()
   })
 

@@ -50,6 +50,13 @@ describe('exerciseMarkdownPlugin', () => {
       expect(html).toContain(':rows="3"')
     })
 
+    it('renders AnswerRadio with parsed items', () => {
+      const html = render(':::answer-box radio\n[] Option one\n[ ] Option two\nignored\n:::', { relativePath: 'r.md' })
+      expect(html).toContain('<AnswerRadio')
+      expect(html).toContain('id="r-q1"')
+      expect(html).toContain(':items="[&quot;Option one&quot;,&quot;Option two&quot;]"')
+    })
+
     it('reads rows=N and clamps it', () => {
       expect(render(':::answer-box table A | B\nrows=5\n:::', { relativePath: 't.md' })).toContain(':rows="5"')
       expect(render(':::answer-box table A | B\nrows=999\n:::', { relativePath: 't.md' })).toContain(':rows="50"')
@@ -61,11 +68,12 @@ describe('exerciseMarkdownPlugin', () => {
     })
 
     it('shares counter and triggers PDF button', () => {
-      const src = '# T\n\n:::answer-box\n:::\n\n:::answer-box checklist\n[] a\n:::\n\n:::answer-box table A\n:::'
+      const src = '# T\n\n:::answer-box\n:::\n\n:::answer-box checklist\n[] a\n:::\n\n:::answer-box radio\n[] yes\n[] no\n:::\n\n:::answer-box table A\n:::'
       const html = render(src, { relativePath: 'mix.md' })
       expect(html).toContain('id="mix-q2"')
       expect(html).toContain('id="mix-q3"')
-      expect(html).toContain(':answer-count="3"')
+      expect(html).toContain('id="mix-q4"')
+      expect(html).toContain(':answer-count="4"')
     })
   })
 

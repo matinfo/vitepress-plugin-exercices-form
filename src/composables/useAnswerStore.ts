@@ -72,7 +72,7 @@ export function useAnswerStore() {
   return { getAnswer, setAnswer, getAnswersForExercise, clearExercise }
 }
 
-export type AnswerType = 'text' | 'checkbox' | 'table'
+export type AnswerType = 'text' | 'checkbox' | 'radio' | 'table'
 
 /** Parse a JSON-encoded structured answer; returns null if invalid. */
 export function parseAnswer<T>(value: string): T | null {
@@ -91,6 +91,10 @@ export function isEmptyAnswer(type: AnswerType, value: string): boolean {
   if (type === 'checkbox') {
     const v = parseAnswer<boolean[]>(value)
     return !Array.isArray(v) || !v.some(Boolean)
+  }
+  if (type === 'radio') {
+    const v = parseAnswer<number>(value)
+    return !(typeof v === 'number' && Number.isInteger(v) && v >= 0)
   }
   if (type === 'table') {
     const v = parseAnswer<string[][]>(value)
