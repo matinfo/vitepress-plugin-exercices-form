@@ -60,6 +60,6 @@ describe('index exports', () => {
     expect(plugin.name).toBe('vitepress-plugin-exercices-form')
     const config = await readPluginConfig(plugin)
     expect(config.ssr?.noExternal).toContain('html2pdf.js')
-    expect(config.optimizeDeps?.exclude).toContain('html2pdf.js')
+    expect(config.optimizeDeps?.include).toContain('html2pdf.js')
   })
 })
