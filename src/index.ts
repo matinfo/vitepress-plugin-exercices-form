@@ -2,6 +2,8 @@ import type { Plugin } from 'vite'
 import type { App } from 'vue'
 import type { ExercisePluginOptions } from './types/exercise'
 import AnswerBox from './components/AnswerBox.vue'
+import AnswerCheckbox from './components/AnswerCheckbox.vue'
+import AnswerTable from './components/AnswerTable.vue'
 import ExercisePdfButton from './components/ExercisePdfButton.vue'
 import { initAnswerStore } from './composables/useAnswerStore'
 
@@ -13,7 +15,7 @@ export { getLocale, locales } from './locales'
 export { exerciseMarkdownPlugin } from './md-plugin'
 export type { ExerciseLocale, ExercisePluginOptions } from './types/exercise'
 
-export { AnswerBox, ExercisePdfButton }
+export { AnswerBox, AnswerCheckbox, AnswerTable, ExercisePdfButton }
 
 /**
  * Vite plugin that handles SSR externalization for html2pdf.js.
@@ -75,5 +77,7 @@ export function enhanceAppWithExercises(app: App, options: ExercisePluginOptions
 
   // Register components globally
   app.component('AnswerBox', AnswerBox)
+  app.component('AnswerCheckbox', AnswerCheckbox)
+  app.component('AnswerTable', AnswerTable)
   app.component('ExercisePdfButton', ExercisePdfButton)
 }
