@@ -153,12 +153,18 @@ function renderComponent(type: string | undefined, boxId: string, body: string[]
   }
   if (type === 'table') {
     let rows = DEFAULT_TABLE_ROWS
+    const firstColumn: string[] = []
     for (const l of body) {
       const m = ROWS_RE.exec(l)
-      if (m)
+      if (m) {
         rows = Math.min(Math.max(Number(m[1]), 1), MAX_TABLE_ROWS)
+        continue
+      }
+      if (l.trim())
+        firstColumn.push(l.trim())
     }
-    return `<AnswerTable id="${id}" :headers="${escapeAttr(JSON.stringify(headers))}" :rows="${rows}" />\n`
+    rows = Math.max(rows, firstColumn.length)
+    return `<AnswerTable id="${id}" :headers="${escapeAttr(JSON.stringify(headers))}" :rows="${rows}" :first-column="${escapeAttr(JSON.stringify(firstColumn))}" />\n`
   }
   return `<AnswerBox id="${id}"${type === 'code' ? ' default-mode="code"' : ''} />\n`
 }
