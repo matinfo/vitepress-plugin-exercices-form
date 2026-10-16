@@ -77,7 +77,9 @@ function buildPdfHtml(): string {
   })
 
   // Filter: keep only questions + answers
+  // keepSet: elements kept whole (answers, question siblings) | pathSet: ancestors, pruned recursively
   const keepSet = new WeakSet<Node>()
+  const pathSet = new WeakSet<Node>()
 
   clone.querySelectorAll('.answer-printed').forEach((answerEl) => {
     keepSet.add(answerEl)
@@ -91,16 +93,16 @@ function buildPdfHtml(): string {
     }
     let parent = answerEl.parentElement
     while (parent && parent !== clone) {
-      keepSet.add(parent)
+      pathSet.add(parent)
       parent = parent.parentElement
     }
   })
 
   function pruneNode(node: Element): void {
-    Array.from(node.children).forEach(child => pruneNode(child))
-    if (!keepSet.has(node) && node !== clone) {
+    if (pathSet.has(node) || node === clone)
+      Array.from(node.children).forEach(child => pruneNode(child))
+    else if (!keepSet.has(node))
       node.remove()
-    }
   }
   pruneNode(clone)
 

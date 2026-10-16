@@ -166,6 +166,27 @@ import { locales } from '@matinfo/vitepress-plugin-exercices-form'
 
 ---
 
+## Troubleshooting
+
+### `Failed to resolve module specifier 'html2pdf.js'` when generating a PDF
+
+Happens when another Vite plugin overrides `optimizeDeps.include`, so `html2pdf.js` is never pre-bundled for the browser. Known case: `vitepress-plugin-mermaid` (`withMermaid`). Add it explicitly in your config:
+
+```ts
+export default withMermaid(
+  defineConfig({
+    vite: {
+      plugins: [exerciceVitePlugin()],
+      optimizeDeps: { include: ['html2pdf.js'] }, // workaround for withMermaid
+    },
+  }),
+)
+```
+
+Then restart with `npx vitepress dev --force` to rebuild the Vite cache.
+
+---
+
 ## Ecosystem
 
 | Package | Description |
