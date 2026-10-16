@@ -152,16 +152,19 @@
 
 /* === AnswerTable === */
 .vpe-table-box {
-  width: 100%;
-  max-width: 100%;
+  display: block;
+  width: 100% !important;
+  max-width: 100% !important;
   overflow-x: auto;
 }
 
 .vpe-answer-table {
-  width: 100%;
+  display: table !important;
+  width: 100% !important;
+  min-width: 100%;
+  max-width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  display: table;
 }
 
 .vpe-answer-table th,
