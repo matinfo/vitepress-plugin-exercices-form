@@ -49,6 +49,7 @@
     "test:build": "npm run test:install && cd test-project && npm run docs:build"
   },
   "peerDependencies": {
+    "html2pdf.js": "^0.14.0",
     "vitepress": "^1.0.0",
     "vue": "^3.0.0"
   },
@@ -58,6 +59,7 @@
     "@types/node": "^22.20.5",
     "@vitejs/plugin-vue": "^6.0.10",
     "eslint": "^10.12.0",
+    "html2pdf.js": "^0.14.0",
     "jsdom": "^30.1.2",
     "markdown-it": "^15.0.2",
     "typescript": "^5.9.3",

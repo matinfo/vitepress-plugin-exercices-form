@@ -79,12 +79,14 @@ In any `.md` file:
 What is the capital of Switzerland?
 
 :::answer-box
+:::
 
 ## Question 2
 
 Write a PowerShell script that lists all files:
 
 :::answer-box code
+:::
 ```
 
 ### 4. Add correction-only content

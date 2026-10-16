@@ -208,11 +208,8 @@ async function generatePdf(): Promise<void> {
 
   generating.value = true
   try {
-    // Dynamic import - html2pdf.js must be in consumer's dependencies
-    // Use Function constructor to create a truly dynamic import that bundlers cannot statically analyze
-    // eslint-disable-next-line no-new-func
-    const dynamicImport = new Function('m', 'return import(m)')
-    const html2pdfModule = await dynamicImport('html2pdf.js')
+    // Dynamic import - html2pdf.js must be in consumer's dependencies (resolved by the consumer's bundler)
+    const html2pdfModule = await import('html2pdf.js')
     const html2pdf = html2pdfModule.default
 
     const htmlContent = buildPdfHtml()
@@ -235,9 +232,9 @@ async function generatePdf(): Promise<void> {
     await new Promise(r => setTimeout(r, 100))
 
     const opt = {
-      margin: [15, 15, 15, 15],
+      margin: [15, 15, 15, 15] as [number, number, number, number],
       filename: `${props.exerciseId}-${studentName.value.trim().replace(/\s+/g, '_')}.pdf`,
-      image: { type: 'jpeg', quality: 0.95 },
+      image: { type: 'jpeg' as const, quality: 0.95 },
       html2canvas: { scale: 2, useCORS: true, logging: false, windowWidth: 794 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const },
       pagebreak: { mode: ['avoid-all', 'css'], avoid: ['.qa-block', '.answer-printed'] },

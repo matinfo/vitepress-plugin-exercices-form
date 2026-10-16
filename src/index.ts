@@ -31,7 +31,7 @@ export function exerciceVitePlugin(): Plugin {
           noExternal: ['html2pdf.js'],
         },
         optimizeDeps: {
-          exclude: ['html2pdf.js'],
+          include: ['html2pdf.js'],
         },
       }
     },
