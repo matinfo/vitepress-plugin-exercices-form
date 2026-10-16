@@ -131,6 +131,18 @@ rows=4
 ```
 
 Headers come from the opening line, separated by `|`. `rows=N` is optional (default `3`, max `50`). Cells are text inputs (state saved as a JSON `string[][]`).
+The answer table always expands to the full available page width. Cells support multi-line answers (`Enter`) and auto-grow while typing.
+You can also prefill and lock the first column by adding plain body lines:
+
+```md
+:::answer-box table Name | Role | Notes
+name 1
+name 2
+name 3
+:::
+```
+
+In this variant, the first column values (`name 1`, `name 2`, `name 3`) are read-only, while other columns stay editable. The number of rows automatically grows to fit all fixed first-column values.
 In the PDF, the table prints as a static table with the same headers and the typed cell values. If every cell is empty, `noAnswer` is printed instead. A table without headers is not recognised.
 
 Checklists and tables share the box counter (`<file>-q<N>`) with text/code boxes, so the PDF button, clear button and storage work unchanged. Note: ids are positional, so inserting a box shifts the answers stored for later ones.

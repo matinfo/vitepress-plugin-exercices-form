@@ -48,6 +48,7 @@ describe('exerciseMarkdownPlugin', () => {
       expect(html).toContain('<AnswerTable')
       expect(html).toContain(':headers="[&quot;Name&quot;,&quot;Role&quot;,&quot;Notes&quot;]"')
       expect(html).toContain(':rows="3"')
+      expect(html).toContain(':first-column="[]"')
     })
 
     it('renders AnswerRadio with parsed items', () => {
@@ -60,6 +61,12 @@ describe('exerciseMarkdownPlugin', () => {
     it('reads rows=N and clamps it', () => {
       expect(render(':::answer-box table A | B\nrows=5\n:::', { relativePath: 't.md' })).toContain(':rows="5"')
       expect(render(':::answer-box table A | B\nrows=999\n:::', { relativePath: 't.md' })).toContain(':rows="50"')
+    })
+
+    it('supports fixed first-column values in table body lines', () => {
+      const html = render(':::answer-box table Name | Role | Notes\nname 1\nname 2\nname 3\n:::', { relativePath: 't.md' })
+      expect(html).toContain(':rows="3"')
+      expect(html).toContain(':first-column="[&quot;name 1&quot;,&quot;name 2&quot;,&quot;name 3&quot;]"')
     })
 
     it('rejects table without headers and unclosed blocks', () => {
