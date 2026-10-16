@@ -157,6 +157,7 @@ interface ExercisePluginOptions {
 }
 ```
 
+```ts
 // Locale data
 import { locales } from "@matinfo/vitepress-plugin-exercices-form"
 ```

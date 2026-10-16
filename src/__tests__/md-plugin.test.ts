@@ -42,7 +42,7 @@ describe('exerciseMarkdownPlugin', () => {
     })
   })
 
-  describe('ExercisePdfButton auto-append', () => {
+  describe('exercisePdfButton auto-append', () => {
     it('appends ExercisePdfButton when answer boxes exist', () => {
       const src = '# My Exercise\n\n:::answer-box\n:::'
       const html = render(src, { relativePath: 'ex1.md' })
