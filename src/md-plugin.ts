@@ -1,5 +1,4 @@
-import type MarkdownIt from 'markdown-it'
-import type StateBlock from 'markdown-it/lib/rules_block/state_block.mjs'
+import type { MarkdownIt, StateBlock } from 'markdown-it'
 
 const OPEN_RE = /^:::answer-box(?:\s+(code))?\s*$/
 const CLOSE_RE = /^:::\s*$/
@@ -107,7 +106,8 @@ function answerBoxRule(
     return false
 
   // Track box counter per file for unique IDs
-  const currentFile = state.env?.relativePath ?? state.env?.path ?? ''
+  const env = (state.env ?? {}) as { relativePath?: string, path?: string }
+  const currentFile = env.relativePath ?? env.path ?? ''
   if (currentFile !== lastFile) {
     boxCounter = 0
     lastFile = currentFile
