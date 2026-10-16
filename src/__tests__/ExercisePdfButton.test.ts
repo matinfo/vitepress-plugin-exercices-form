@@ -53,13 +53,14 @@ describe('exercisePdfButton content filtering', () => {
     expect(html).toContain('Énoncé 4.')
   })
 
-  it('prints checklist glyphs and table cells', async () => {
+  it('prints checklist, radio glyphs and table cells', async () => {
     vi.stubGlobal('open', vi.fn())
     URL.createObjectURL = vi.fn(() => 'blob:x')
     const { useAnswerStore } = await import('../composables/useAnswerStore')
     const store = useAnswerStore()
     store.setAnswer('ex-q1', '[true,false]')
-    store.setAnswer('ex-q2', '[["a","b"],["",""]]')
+    store.setAnswer('ex-q2', '1')
+    store.setAnswer('ex-q3', '[["a","b"],["",""]]')
     const html = await generate(
       `<p>Q1</p>
        <div id="ex-q1" class="vpe-answer-box" data-vpe-type="checkbox">
@@ -67,10 +68,17 @@ describe('exercisePdfButton content filtering', () => {
          <label class="vpe-checkbox-item"><input type="checkbox"><span>Second</span></label>
        </div>
        <p>Q2</p>
-       <div id="ex-q2" class="vpe-answer-box" data-vpe-type="table"><table><thead><tr><th>H1</th><th>H2</th></tr></thead></table></div>`,
+       <div id="ex-q2" class="vpe-answer-box" data-vpe-type="radio">
+         <label class="vpe-radio-item"><input type="radio"><span>One</span></label>
+         <label class="vpe-radio-item"><input type="radio"><span>Two</span></label>
+       </div>
+       <p>Q2</p>
+       <div id="ex-q3" class="vpe-answer-box" data-vpe-type="table"><table><thead><tr><th>H1</th><th>H2</th></tr></thead></table></div>`,
     )
     expect(html).toContain('\u2611')
     expect(html).toContain('\u2610')
+    expect(html).toContain('◉')
+    expect(html).toContain('◯')
     expect(html).toContain('answer-table')
     expect(html).toContain('<td>a</td>')
     expect(html).toContain('<th>H2</th>')

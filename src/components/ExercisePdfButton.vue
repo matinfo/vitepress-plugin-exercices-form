@@ -71,6 +71,29 @@ function renderCheckboxAnswer(el: HTMLElement, answers: Record<string, string>):
   return answerDiv
 }
 
+function renderRadioAnswer(el: HTMLElement, answers: Record<string, string>): HTMLElement {
+  const answer = answers[el.id] ?? ''
+  const answerDiv = document.createElement('div')
+  answerDiv.className = 'answer-printed answer-checklist'
+  if (isEmptyAnswer('radio', answer)) {
+    answerDiv.textContent = locale.noAnswer
+    return answerDiv
+  }
+  const selected = parseAnswer<number>(answer)
+  el.querySelectorAll('.vpe-radio-item').forEach((item, i) => {
+    const line = document.createElement('div')
+    line.className = 'answer-check-item'
+    const box = document.createElement('span')
+    box.className = 'answer-check-glyph'
+    box.textContent = selected === i ? '◉' : '◯'
+    const label = document.createElement('span')
+    label.textContent = item.textContent?.trim() ?? ''
+    line.append(box, label)
+    answerDiv.appendChild(line)
+  })
+  return answerDiv
+}
+
 function renderTableAnswer(el: HTMLElement, answers: Record<string, string>): HTMLElement {
   const answer = answers[el.id] ?? ''
   const answerDiv = document.createElement('div')
@@ -128,9 +151,11 @@ function buildPdfHtml(): string {
     const type = (el as HTMLElement).dataset.vpeType
     const answerDiv = type === 'checkbox'
       ? renderCheckboxAnswer(el as HTMLElement, answers)
-      : type === 'table'
-        ? renderTableAnswer(el as HTMLElement, answers)
-        : renderTextAnswer(el, answers)
+      : type === 'radio'
+        ? renderRadioAnswer(el as HTMLElement, answers)
+        : type === 'table'
+          ? renderTableAnswer(el as HTMLElement, answers)
+          : renderTextAnswer(el, answers)
     if (answerDiv)
       el.replaceWith(answerDiv)
   })

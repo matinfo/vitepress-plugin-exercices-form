@@ -1,6 +1,6 @@
 import type { MarkdownIt, StateBlock } from 'markdown-it'
 
-const OPEN_RE = /^:::answer-box(?:\s+(code|checklist|table)\b(.*))?$/
+const OPEN_RE = /^:::answer-box(?:\s+(code|checklist|radio|table)\b(.*))?$/
 const CHECK_ITEM_RE = /^\[\s?\]\s*(\S.*)$/
 const ROWS_RE = /^rows\s*=\s*(\d+)$/i
 const DEFAULT_TABLE_ROWS = 3
@@ -14,7 +14,8 @@ const RE_MD_EXT = /\.md$/i
  *
  * Transforms `:::answer-box` / `:::answer-box code` / `:::answer-box checklist`
  * / `:::answer-box table H1 | H2` fenced blocks into `<AnswerBox>`,
- * `<AnswerCheckbox>` and `<AnswerTable>` Vue components, and auto-appends `<ExercisePdfButton>`
+ * `<AnswerCheckbox>`, `<AnswerRadio>` and `<AnswerTable>` Vue components,
+ * and auto-appends `<ExercisePdfButton>`
  * at the end of pages containing answer boxes.
  *
  * Usage in VitePress config:
@@ -145,6 +146,10 @@ function renderComponent(type: string | undefined, boxId: string, body: string[]
   if (type === 'checklist') {
     const items = body.map(l => CHECK_ITEM_RE.exec(l)?.[1].trim()).filter((i): i is string => !!i)
     return `<AnswerCheckbox id="${id}" :items="${escapeAttr(JSON.stringify(items))}" />\n`
+  }
+  if (type === 'radio') {
+    const items = body.map(l => CHECK_ITEM_RE.exec(l)?.[1].trim()).filter((i): i is string => !!i)
+    return `<AnswerRadio id="${id}" :items="${escapeAttr(JSON.stringify(items))}" />\n`
   }
   if (type === 'table') {
     let rows = DEFAULT_TABLE_ROWS

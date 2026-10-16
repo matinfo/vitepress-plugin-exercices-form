@@ -125,6 +125,31 @@
   cursor: pointer;
 }
 
+/* === AnswerRadio === */
+.vpe-radio-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 1px solid var(--vp-c-border, #e2e2e3);
+  border-radius: 8px;
+  background: var(--vp-c-bg-soft, #f6f6f7);
+}
+
+.vpe-radio-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.vpe-radio-item input {
+  margin-top: 4px;
+  cursor: pointer;
+}
+
 /* === AnswerTable === */
 .vpe-table-box {
   overflow-x: auto;

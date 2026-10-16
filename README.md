@@ -106,6 +106,7 @@ This content is hidden in student documents but visible in corrections.
 | `:::answer-box` | Text answer area (resizable) |
 | `:::answer-box code` | Code editor (monospace, tab support) |
 | `:::answer-box checklist` | Checkbox list — one `[] sentence` per body line |
+| `:::answer-box radio` | Single-choice list (radio buttons) — one `[] sentence` per body line |
 | `:::answer-box table H1 \| H2 \| H3` | Table with the given column headers (`rows=N` optional) |
 | `:::answer-box-off` | Correction-only block — visible in PDF corrections, hidden on student pages |
 
@@ -133,6 +134,19 @@ Headers come from the opening line, separated by `|`. `rows=N` is optional (defa
 In the PDF, the table prints as a static table with the same headers and the typed cell values. If every cell is empty, `noAnswer` is printed instead. A table without headers is not recognised.
 
 Checklists and tables share the box counter (`<file>-q<N>`) with text/code boxes, so the PDF button, clear button and storage work unchanged. Note: ids are positional, so inserting a box shifts the answers stored for later ones.
+
+### Radio (single choice)
+
+```md
+:::answer-box radio
+[] Option one
+[] Option two
+[] Option three
+:::
+```
+
+Each `[] text` line becomes one radio option (only one can be selected). Other body lines are ignored.
+State is saved as a JSON number (the selected option index). In the PDF, items print as `◉` / `◯` followed by the sentence. If no option is selected, the locale `noAnswer` text is printed instead.
 
 ---
 
