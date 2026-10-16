@@ -105,7 +105,34 @@ This content is hidden in student documents but visible in corrections.
 | --- | --- |
 | `:::answer-box` | Text answer area (resizable) |
 | `:::answer-box code` | Code editor (monospace, tab support) |
+| `:::answer-box checklist` | Checkbox list — one `[] sentence` per body line |
+| `:::answer-box table H1 \| H2 \| H3` | Table with the given column headers (`rows=N` optional) |
 | `:::answer-box-off` | Correction-only block — visible in PDF corrections, hidden on student pages |
+
+### Checklist
+
+```md
+:::answer-box checklist
+[] Sentence one
+[] Sentence two
+:::
+```
+
+Each `[] text` line becomes a checkbox (state saved as a JSON `boolean[]`). Other body lines are ignored.
+In the PDF, items print as `☑` / `☐` followed by the sentence. If nothing is ticked, the locale `noAnswer` text is printed instead.
+
+### Table
+
+```md
+:::answer-box table Name | Role | Notes
+rows=4
+:::
+```
+
+Headers come from the opening line, separated by `|`. `rows=N` is optional (default `3`, max `50`). Cells are text inputs (state saved as a JSON `string[][]`).
+In the PDF, the table prints as a static table with the same headers and the typed cell values. If every cell is empty, `noAnswer` is printed instead. A table without headers is not recognised.
+
+Checklists and tables share the box counter (`<file>-q<N>`) with text/code boxes, so the PDF button, clear button and storage work unchanged. Note: ids are positional, so inserting a box shifts the answers stored for later ones.
 
 ---
 

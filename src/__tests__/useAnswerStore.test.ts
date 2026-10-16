@@ -70,3 +70,14 @@ describe('useAnswerStore', () => {
     expect(getAnswer('ex2-q1')).toBe('keep')
   })
 })
+
+describe('isEmptyAnswer', () => {
+  it('detects empty structured answers', async () => {
+    const { isEmptyAnswer } = await import('../composables/useAnswerStore')
+    expect(isEmptyAnswer('checkbox', '[false,false]')).toBe(true)
+    expect(isEmptyAnswer('checkbox', '[false,true]')).toBe(false)
+    expect(isEmptyAnswer('table', '[["",""]]')).toBe(true)
+    expect(isEmptyAnswer('table', '[["","x"]]')).toBe(false)
+    expect(isEmptyAnswer('text', '  ')).toBe(true)
+  })
+})

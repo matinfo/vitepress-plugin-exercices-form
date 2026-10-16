@@ -1,6 +1,10 @@
 import type { MarkdownIt, StateBlock } from 'markdown-it'
 
-const OPEN_RE = /^:::answer-box(?:\s+(code))?\s*$/
+const OPEN_RE = /^:::answer-box(?:\s+(code|checklist|table)\b(.*))?$/
+const CHECK_ITEM_RE = /^\[\s?\]\s*(\S.*)$/
+const ROWS_RE = /^rows\s*=\s*(\d+)$/i
+const DEFAULT_TABLE_ROWS = 3
+const MAX_TABLE_ROWS = 50
 const CLOSE_RE = /^:::\s*$/
 const OPEN_OFF_RE = /^:::answer-box-off\s*$/
 const RE_MD_EXT = /\.md$/i
@@ -8,8 +12,9 @@ const RE_MD_EXT = /\.md$/i
 /**
  * Register the exercise answer-box block rule on a markdown-it instance.
  *
- * Transforms `:::answer-box` / `:::answer-box code` fenced blocks into
- * `<AnswerBox>` Vue components, and auto-appends `<ExercisePdfButton>`
+ * Transforms `:::answer-box` / `:::answer-box code` / `:::answer-box checklist`
+ * / `:::answer-box table H1 | H2` fenced blocks into `<AnswerBox>`,
+ * `<AnswerCheckbox>` and `<AnswerTable>` Vue components, and auto-appends `<ExercisePdfButton>`
  * at the end of pages containing answer boxes.
  *
  * Usage in VitePress config:
@@ -83,7 +88,7 @@ function answerBoxRule(
   const startMax = state.eMarks[startLine]
   const lineText = state.src.slice(startPos, startMax)
 
-  const match = OPEN_RE.exec(lineText)
+  const match = OPEN_RE.exec(lineText.trim())
   if (!match)
     return false
   if (silent)
@@ -92,6 +97,7 @@ function answerBoxRule(
   // Find closing :::
   let nextLine = startLine + 1
   let found = false
+  const body: string[] = []
   while (nextLine < endLine) {
     const pos = state.bMarks[nextLine] + state.tShift[nextLine]
     const max = state.eMarks[nextLine]
@@ -100,9 +106,17 @@ function answerBoxRule(
       found = true
       break
     }
+    body.push(line.trim())
     nextLine++
   }
   if (!found)
+    return false
+
+  const type = match[1]
+  const headers = type === 'table'
+    ? (match[2] ?? '').split('|').map(h => h.trim()).filter(Boolean)
+    : []
+  if (type === 'table' && headers.length === 0)
     return false
 
   // Track box counter per file for unique IDs
@@ -114,17 +128,34 @@ function answerBoxRule(
   }
   boxCounter++
 
-  const isCode = match[1] === 'code'
   const exerciseId = deriveExerciseId(state.env, '')
   const boxId = `${exerciseId}-q${boxCounter}`
 
   const token = state.push('answer_box', '', 0)
-  token.content = `<AnswerBox id="${escapeAttr(boxId)}"${isCode ? ' default-mode="code"' : ''} />\n`
+  token.content = renderComponent(type, boxId, body, headers)
   token.map = [startLine, nextLine + 1]
   token.block = true
 
   state.line = nextLine + 1
   return true
+}
+
+function renderComponent(type: string | undefined, boxId: string, body: string[], headers: string[]): string {
+  const id = escapeAttr(boxId)
+  if (type === 'checklist') {
+    const items = body.map(l => CHECK_ITEM_RE.exec(l)?.[1].trim()).filter((i): i is string => !!i)
+    return `<AnswerCheckbox id="${id}" :items="${escapeAttr(JSON.stringify(items))}" />\n`
+  }
+  if (type === 'table') {
+    let rows = DEFAULT_TABLE_ROWS
+    for (const l of body) {
+      const m = ROWS_RE.exec(l)
+      if (m)
+        rows = Math.min(Math.max(Number(m[1]), 1), MAX_TABLE_ROWS)
+    }
+    return `<AnswerTable id="${id}" :headers="${escapeAttr(JSON.stringify(headers))}" :rows="${rows}" />\n`
+  }
+  return `<AnswerBox id="${id}"${type === 'code' ? ' default-mode="code"' : ''} />\n`
 }
 
 /* ── answer-box-off block rule (correction-only, stripped) ───────────── */

@@ -71,3 +71,30 @@ export function useAnswerStore() {
 
   return { getAnswer, setAnswer, getAnswersForExercise, clearExercise }
 }
+
+export type AnswerType = 'text' | 'checkbox' | 'table'
+
+/** Parse a JSON-encoded structured answer; returns null if invalid. */
+export function parseAnswer<T>(value: string): T | null {
+  try {
+    return JSON.parse(value) as T
+  }
+  catch {
+    return null
+  }
+}
+
+/** True when a stored answer holds no user input (unchecked list, empty grid, blank text). */
+export function isEmptyAnswer(type: AnswerType, value: string): boolean {
+  if (!value)
+    return true
+  if (type === 'checkbox') {
+    const v = parseAnswer<boolean[]>(value)
+    return !Array.isArray(v) || !v.some(Boolean)
+  }
+  if (type === 'table') {
+    const v = parseAnswer<string[][]>(value)
+    return !Array.isArray(v) || !v.some(r => Array.isArray(r) && r.some(c => String(c ?? '').trim()))
+  }
+  return !value.trim()
+}

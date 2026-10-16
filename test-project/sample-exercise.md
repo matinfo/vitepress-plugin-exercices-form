@@ -30,3 +30,17 @@ Learn the basics of PowerShell commands and scripting.
 
 :::answer-box code
 :::
+
+Which of these are PowerShell cmdlets?
+
+:::answer-box checklist
+[] Get-Process
+[] ls -la
+[] Set-Location
+:::
+
+Fill in the table with three cmdlets:
+
+:::answer-box table Cmdlet | Purpose | Example
+rows=3
+:::

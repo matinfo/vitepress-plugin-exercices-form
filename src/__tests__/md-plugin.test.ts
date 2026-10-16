@@ -35,6 +35,40 @@ describe('exerciseMarkdownPlugin', () => {
     })
   })
 
+  describe('checklist and table types', () => {
+    it('renders AnswerCheckbox with parsed items', () => {
+      const html = render(':::answer-box checklist\n[] One\n[ ] Two "q"\nignored\n:::', { relativePath: 'c.md' })
+      expect(html).toContain('<AnswerCheckbox')
+      expect(html).toContain('id="c-q1"')
+      expect(html).toContain(':items="[&quot;One&quot;,&quot;Two \\&quot;q\\&quot;&quot;]"')
+    })
+
+    it('renders AnswerTable with headers and default rows', () => {
+      const html = render(':::answer-box table Name | Role | Notes\n:::', { relativePath: 't.md' })
+      expect(html).toContain('<AnswerTable')
+      expect(html).toContain(':headers="[&quot;Name&quot;,&quot;Role&quot;,&quot;Notes&quot;]"')
+      expect(html).toContain(':rows="3"')
+    })
+
+    it('reads rows=N and clamps it', () => {
+      expect(render(':::answer-box table A | B\nrows=5\n:::', { relativePath: 't.md' })).toContain(':rows="5"')
+      expect(render(':::answer-box table A | B\nrows=999\n:::', { relativePath: 't.md' })).toContain(':rows="50"')
+    })
+
+    it('rejects table without headers and unclosed blocks', () => {
+      expect(render(':::answer-box table\n:::', { relativePath: 't.md' })).not.toContain('<AnswerTable')
+      expect(render(':::answer-box checklist\n[] a', { relativePath: 't.md' })).not.toContain('<AnswerCheckbox')
+    })
+
+    it('shares counter and triggers PDF button', () => {
+      const src = '# T\n\n:::answer-box\n:::\n\n:::answer-box checklist\n[] a\n:::\n\n:::answer-box table A\n:::'
+      const html = render(src, { relativePath: 'mix.md' })
+      expect(html).toContain('id="mix-q2"')
+      expect(html).toContain('id="mix-q3"')
+      expect(html).toContain(':answer-count="3"')
+    })
+  })
+
   describe('answer-box-off rule', () => {
     it('strips answer-box-off blocks (produces empty output)', () => {
       const html = render(':::answer-box-off\nsome hidden content\n:::', { relativePath: 'test.md' })
