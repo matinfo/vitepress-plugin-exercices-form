@@ -19,8 +19,8 @@ updates:
       prefix: chore(deps)
       prefix-development: chore(dev-deps)
     ignore:
-      # follows the CI Node version, not useful to bump alone
-      - dependency-name: '@types/node'
+      # majors are upgraded by hand
+      - dependency-name: '*'
         update-types: ['version-update:semver-major']
     groups:
       security:
@@ -47,6 +47,9 @@ updates:
       default-days: 7
     commit-message:
       prefix: ci
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
     groups:
       github-actions:
         patterns: ['*']
