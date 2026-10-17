@@ -12,13 +12,13 @@ const { getAnswer, setAnswer } = useAnswerStore()
 const selected = ref<number | null>(null)
 
 onMounted(() => {
-  const saved = parseAnswer<number>(getAnswer(props.id))
+  const saved = parseAnswer<number>(getAnswer(props.id, 'radio'))
   if (typeof saved === 'number' && Number.isInteger(saved) && saved >= 0 && saved < props.items.length)
     selected.value = saved
 })
 
 watch(selected, (val) => {
-  setAnswer(props.id, Number.isInteger(val) ? JSON.stringify(val) : '')
+  setAnswer(props.id, Number.isInteger(val) ? JSON.stringify(val) : '', 'radio')
 })
 </script>
 
