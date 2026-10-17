@@ -1,7 +1,7 @@
 {
   "name": "@matinfo/vitepress-plugin-exercices-form",
   "type": "module",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "VitePress plugin for interactive exercises with answer boxes and client-side PDF generation",
   "author": "matinfo",
   "license": "GPL-3.0-only",
