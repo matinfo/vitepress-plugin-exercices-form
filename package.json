@@ -46,7 +46,8 @@
     "test:install": "npm run build && npm run pack && cd test-project && npm install",
     "test:dev": "npm run test:install && cd test-project && npm run docs:dev",
     "test:dev:only": "cd test-project && npm run docs:dev",
-    "test:build": "npm run test:install && cd test-project && npm run docs:build"
+    "test:build": "npm run test:install && cd test-project && npm run docs:build",
+    "test:pdf": "npm run test:install && cd test-project && npm run pdf"
   },
   "peerDependencies": {
     "html2pdf.js": "^0.14.0",

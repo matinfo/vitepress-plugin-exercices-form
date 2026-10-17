@@ -134,6 +134,9 @@ function buildPdfHtml(): string {
 
   const clone = contentEl.cloneNode(true) as HTMLElement
 
+  // Drop code-block chrome (language label, copy button) before classes are stripped
+  clone.querySelectorAll('div[class*="language-"] > span.lang, div[class*="language-"] > button.copy').forEach(el => el.remove())
+
   // Strip VitePress scoped classes
   clone.className = ''
   clone.querySelectorAll('[class]').forEach((el) => {
@@ -192,6 +195,11 @@ function buildPdfHtml(): string {
 
   // Wrap question + answer into qa-blocks for page break avoidance
   clone.querySelectorAll('.answer-printed').forEach((answerEl) => {
+    // Inside a list item the question is mixed inline text: keep the item intact
+    if (answerEl.parentElement?.tagName === 'LI') {
+      answerEl.parentElement.classList.add('qa-block')
+      return
+    }
     const wrapper = document.createElement('div')
     wrapper.className = 'qa-block'
 
@@ -247,16 +255,29 @@ function buildPdfHtml(): string {
     h3 { font-size: 11pt; font-weight: 600; margin: 10pt 0 4pt; }
     p { margin: 4pt 0; }
     code {
-      background: #f3f3f3; padding: 2px 5px; border-radius: 3px;
+      display: inline-block; max-width: 100%; vertical-align: baseline; line-height: 1.3;
+      overflow-wrap: anywhere; background: none; color: #111;
+      padding: 0;
       font-family: "JetBrains Mono", "Fira Code", monospace; font-size: 10pt;
     }
     pre { background: #f6f6f6; padding: 10px; border-radius: 4px; margin: 8px 0; overflow-x: auto; }
-    pre code { background: none; padding: 0; }
+    pre code { display: inline; background: none; padding: 0; margin: 0; line-height: inherit; }
     table { border-collapse: collapse; margin: 8px 0; width: 100%; }
     th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; font-size: 10pt; }
     th { background: #f0f0f0; font-weight: 600; }
-    ul, ol { margin: 4pt 0; padding-left: 20pt; }
-    li { margin: 2pt 0; }
+    /* Native markers are rendered misaligned by html2canvas: draw them with ::before */
+    ul, ol { margin: 4pt 0; padding-left: 22pt; list-style: none; counter-reset: pdf-li; }
+    li { position: relative; margin: 2pt 0; counter-increment: pdf-li; }
+    li::before {
+      position: absolute; left: -22pt; width: 18pt; text-align: right;
+      line-height: inherit; font: inherit;
+    }
+    ul > li::before { content: "•"; }
+    ul ul > li::before, ol ul > li::before { content: "◦"; }
+    ol > li::before { content: counter(pdf-li) "."; }
+    ol ol > li::before, ul ol > li::before { content: counter(pdf-li, lower-alpha) "."; }
+    li > p { margin: 2pt 0; }
+    li > pre, li > div { margin: 6px 0; }
     img { max-width: 100%; height: auto; }
     .answer-printed {
       border: 1.5px solid #bbb; border-radius: 4px;

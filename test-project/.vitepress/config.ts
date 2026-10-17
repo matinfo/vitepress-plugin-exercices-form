@@ -18,10 +18,12 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: 'Sample Exercise', link: '/sample-exercise' },
+      { text: 'Complex Exercise', link: '/complex-exercise' },
     ],
     sidebar: [
       { text: 'Home', link: '/' },
       { text: 'Sample Exercise', link: '/sample-exercise' },
+      { text: 'Complex Exercise', link: '/complex-exercise' },
     ],
   },
 })
