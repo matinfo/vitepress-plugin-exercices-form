@@ -215,9 +215,9 @@ function buildPdfHtml(): string {
     const questionEls: Element[] = []
     for (let i = siblings.length - 1; i >= 0; i--) {
       const tag = siblings[i].tagName.toLowerCase()
+      questionEls.unshift(siblings[i])
       if (RE_H13.test(tag))
         break
-      questionEls.unshift(siblings[i])
     }
 
     if (questionEls.length > 0) {
@@ -354,7 +354,7 @@ async function generatePdf(): Promise<void> {
       image: { type: 'jpeg' as const, quality: 0.95 },
       html2canvas: { scale: 2, useCORS: true, logging: false, windowWidth: 794 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const },
-      pagebreak: { mode: ['avoid-all', 'css'], avoid: ['.qa-block', '.answer-printed'] },
+      pagebreak: { mode: ['css', 'legacy'], avoid: ['.qa-block', '.answer-printed', 'p', 'li', 'h1', 'h2', 'h3', 'pre', 'tr'] },
     }
 
     const worker = html2pdf().set(opt).from(content)
