@@ -1,6 +1,8 @@
 import { reactive } from 'vue'
 
 const answers = reactive<Record<string, string>>({})
+// Box type that wrote each answer; absent for answers saved before type tagging.
+const types: Record<string, AnswerType> = {}
 let loaded = false
 let prefix = 'exercise-'
 
@@ -12,11 +14,17 @@ function loadFromStorage(): void {
   loaded = true
 
   const storageKey = `${prefix}answers-`
+  const typeKey = `${prefix}type-`
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i)
     if (key?.startsWith(storageKey)) {
       const id = key.slice(storageKey.length)
       answers[id] = localStorage.getItem(key) ?? ''
+    }
+    else if (key?.startsWith(typeKey)) {
+      const type = localStorage.getItem(key)
+      if (type === 'text' || type === 'checkbox' || type === 'radio' || type === 'table')
+        types[key.slice(typeKey.length)] = type
     }
   }
 }
@@ -29,20 +37,48 @@ export function useAnswerStore() {
   loadFromStorage()
 
   const storageKey = `${prefix}answers-`
+  const typeKey = `${prefix}type-`
 
-  function getAnswer(id: string): string {
-    return answers[id] ?? ''
+  function removeStored(id: string): void {
+    delete answers[id]
+    delete types[id]
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(storageKey + id)
+      localStorage.removeItem(typeKey + id)
+    }
   }
 
-  function setAnswer(id: string, value: string): void {
+  /**
+   * Box ids are positional, so an id can outlive the box type that wrote it.
+   * When `type` is given, an answer written by another type is discarded.
+   * Untagged (legacy) answers are only discarded for text boxes when they
+   * look like structured JSON.
+   */
+  function getAnswer(id: string, type?: AnswerType): string {
+    const value = answers[id] ?? ''
+    if (!type || !value)
+      return value
+    const tag = types[id]
+    const stale = tag
+      ? tag !== type
+      : type === 'text' && Array.isArray(parseAnswer<unknown>(value))
+    if (stale) {
+      removeStored(id)
+      return ''
+    }
+    return value
+  }
+
+  function setAnswer(id: string, value: string, type: AnswerType = 'text'): void {
+    if (!value) {
+      removeStored(id)
+      return
+    }
     answers[id] = value
+    types[id] = type
     if (typeof window !== 'undefined') {
-      if (value) {
-        localStorage.setItem(storageKey + id, value)
-      }
-      else {
-        localStorage.removeItem(storageKey + id)
-      }
+      localStorage.setItem(storageKey + id, value)
+      localStorage.setItem(typeKey + id, type)
     }
   }
 
@@ -61,10 +97,7 @@ export function useAnswerStore() {
     const pfx = `${exerciseId}-`
     for (const key of Object.keys(answers)) {
       if (key.startsWith(pfx)) {
-        delete answers[key]
-        if (typeof window !== 'undefined') {
-          localStorage.removeItem(storageKey + key)
-        }
+        removeStored(key)
       }
     }
   }

@@ -88,7 +88,7 @@ function handleKeydown(e: KeyboardEvent) {
 
 onMounted(() => {
   loadMode()
-  text.value = getAnswer(props.id)
+  text.value = getAnswer(props.id, 'text')
   nextTick(autoGrow)
 })
 
