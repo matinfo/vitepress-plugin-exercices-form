@@ -184,6 +184,7 @@ Deux exercices supplémentaires, avec les mêmes dossiers :
 1. Copier **tous les fichiers sauf** ceux dont l'extension est `*.jpg`. Quelle commande ?
 
 :::answer-box code
+iziuzo tzutecho bonjour > bonjour.txt echo bonjour > bonjour.txt echo bonjour > bonjour.txt echo bonjour > bonjour.txt uztzuo 
 :::
 
 2. Copier tous les fichiers et **uniquement les répertoires non vides**. Quelle commande ?

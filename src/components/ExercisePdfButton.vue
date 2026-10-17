@@ -260,7 +260,7 @@ function buildPdfHtml(): string {
       padding: 0;
       font-family: "JetBrains Mono", "Fira Code", monospace; font-size: 10pt;
     }
-    pre { background: #f6f6f6; padding: 10px; border-radius: 4px; margin: 8px 0; overflow-x: auto; }
+    pre { background: #f6f6f6; padding: 10px; border-radius: 4px; margin: 8px 0; white-space: pre-wrap; overflow-wrap: anywhere; }
     pre code { display: inline; background: none; padding: 0; margin: 0; line-height: inherit; }
     table { border-collapse: collapse; margin: 8px 0; width: 100%; }
     th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; font-size: 10pt; }
@@ -288,7 +288,7 @@ function buildPdfHtml(): string {
     .answer-printed.answer-code {
       background: #f6f6f6;
       font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
-      font-size: 10pt; white-space: pre; tab-size: 2;
+      font-size: 10pt; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-all; tab-size: 2;
     }
     .answer-printed.answer-checklist { white-space: normal; }
     .answer-check-item { display: flex; gap: 8px; align-items: flex-start; margin: 2px 0; }
