@@ -92,4 +92,31 @@ describe('exercisePdfButton content filtering', () => {
     )
     expect(html).toContain('(no answer)')
   })
+
+  it('keeps lists and drops code-block chrome', async () => {
+    vi.stubGlobal('open', vi.fn())
+    URL.createObjectURL = vi.fn(() => 'blob:x')
+    const html = await generate(
+      `<ol><li>Open <strong>cmd</strong></li><li>Type:<div class="language-bat vp-adaptive-theme"><button title="Copy Code" class="copy"></button><span class="lang">bat</span><pre><code>c:\nmkdir x</code></pre></div></li></ol>
+       <div class="vpe-answer-box"><textarea id="ex-q1"></textarea></div>`,
+    )
+    expect(html).toContain('<ol>')
+    expect(html).toContain('<li>')
+    expect(html).toContain('mkdir x')
+    expect(html).not.toContain('>bat<')
+    expect(html).not.toContain('Copy Code')
+  })
+
+  it('keeps list item text and inline code when the answer box is inside the item', async () => {
+    vi.stubGlobal('open', vi.fn())
+    URL.createObjectURL = vi.fn(() => 'blob:x')
+    const html = await generate(
+      `<ol><li>Exécutez : <code>robocopy a b</code></li><li>Exécutez (supprime <code>planning.jpg</code>) : <code>del C:\\x</code>
+       <div class="vpe-answer-box"><textarea id="ex-q1"></textarea></div></li></ol>`,
+    )
+    expect(html).toContain('<li class="qa-block">')
+    expect(html).toContain('<code>planning.jpg</code>')
+    expect(html).toContain('Exécutez (supprime')
+    expect(html).toContain('del C:')
+  })
 })
