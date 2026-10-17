@@ -12,13 +12,13 @@ const { getAnswer, setAnswer } = useAnswerStore()
 const checked = ref<boolean[]>(props.items.map(() => false))
 
 onMounted(() => {
-  const saved = parseAnswer<boolean[]>(getAnswer(props.id))
+  const saved = parseAnswer<boolean[]>(getAnswer(props.id, 'checkbox'))
   if (Array.isArray(saved))
     checked.value = props.items.map((_, i) => saved[i] === true)
 })
 
 watch(checked, (val) => {
-  setAnswer(props.id, val.some(Boolean) ? JSON.stringify(val) : '')
+  setAnswer(props.id, val.some(Boolean) ? JSON.stringify(val) : '', 'checkbox')
 }, { deep: true })
 </script>
 

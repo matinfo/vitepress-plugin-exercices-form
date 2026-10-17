@@ -39,7 +39,7 @@ function handleCellInput(e: Event): void {
 }
 
 onMounted(() => {
-  const current = getAnswer(props.id)
+  const current = getAnswer(props.id, 'table')
   const saved = parseAnswer<string[][]>(current)
   if (Array.isArray(saved)) {
     cells.value = emptyGrid().map((row, r) =>
@@ -51,13 +51,13 @@ onMounted(() => {
     )
   }
   if (!current && props.firstColumn.some(v => String(v).trim()))
-    setAnswer(props.id, JSON.stringify(cells.value))
+    setAnswer(props.id, JSON.stringify(cells.value), 'table')
   nextTick(autoGrowAll)
 })
 
 watch(cells, (val) => {
   const json = JSON.stringify(val)
-  setAnswer(props.id, isEmptyAnswer('table', json) ? '' : json)
+  setAnswer(props.id, isEmptyAnswer('table', json) ? '' : json, 'table')
   nextTick(autoGrowAll)
 }, { deep: true })
 </script>

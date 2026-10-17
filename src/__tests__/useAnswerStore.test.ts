@@ -84,3 +84,29 @@ describe('isEmptyAnswer', () => {
     expect(isEmptyAnswer('text', '  ')).toBe(true)
   })
 })
+
+describe('answer type tagging', () => {
+  beforeEach(() => {
+    localStorageMock.clear()
+    initAnswerStore('tag-')
+  })
+
+  it('discards an answer written by another box type', () => {
+    const { setAnswer, getAnswer } = useAnswerStore()
+    setAnswer('tag-ex-q1', '[["a","","",""]]', 'table')
+    expect(getAnswer('tag-ex-q1', 'text')).toBe('')
+    expect(store['tag-answers-tag-ex-q1']).toBeUndefined()
+  })
+
+  it('keeps an answer of the same type, even JSON-looking text', () => {
+    const { setAnswer, getAnswer } = useAnswerStore()
+    setAnswer('tag-ex-q2', '[1,2]', 'text')
+    expect(getAnswer('tag-ex-q2', 'text')).toBe('[1,2]')
+  })
+
+  it('discards untagged legacy JSON array for a text box', () => {
+    store['tag-answers-tag-ex-q3'] = '[["x"]]'
+    const { getAnswer } = useAnswerStore()
+    expect(getAnswer('tag-ex-q3', 'text')).toBe('')
+  })
+})
