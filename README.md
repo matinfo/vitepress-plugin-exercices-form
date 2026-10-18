@@ -240,17 +240,6 @@ Then restart with `npx vitepress dev --force` to rebuild the Vite cache.
 
 ---
 
-## Ecosystem
-
-| Package | Description |
-| --- | --- |
-| [@matinfo/vitepress-plugin-exercise-parser](https://github.com/matinfo/vitepress-plugin-exercise-parser) | Shared Markdown → AST parser |
-| **[@matinfo/vitepress-plugin-exercices-form](https://github.com/matinfo/vitepress-plugin-exercices-form)** | Runtime interactive answer boxes *(this package)* |
-| [@matinfo/vitepress-plugin-exercices-pdf](https://github.com/matinfo/vitepress-plugin-exercices-pdf) | Build-time student + correction PDF generator |
-| [@matinfo/vitepress-plugin-cards-pdf](https://github.com/matinfo/vitepress-plugin-cards-pdf) | Build-time card grid PDF generator |
-
----
-
 ## Contributing
 
 Pull requests are welcome — please open an issue first for significant changes.
