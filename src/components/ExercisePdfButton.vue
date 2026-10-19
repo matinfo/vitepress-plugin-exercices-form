@@ -18,6 +18,7 @@ const dateLocale = inject<string>('exercise-date-locale', 'en')
 const storagePrefix = inject<string>('exercise-storage-prefix', 'exercise-')
 
 const studentName = ref('')
+const toFilenamePart = (v: string) => v.trim().replace(/[\\/:*?"<>|]/g, '').replace(/\s+/g, '_')
 const studentClass = ref('')
 const generating = ref(false)
 const showValidation = ref(false)
@@ -350,7 +351,7 @@ async function generatePdf(): Promise<void> {
 
     const opt = {
       margin: [15, 15, 15, 15] as [number, number, number, number],
-      filename: `${props.exerciseId}-${studentName.value.trim().replace(/\s+/g, '_')}.pdf`,
+      filename: `${[props.exerciseId, studentName.value, studentClass.value].map(toFilenamePart).join('-')}.pdf`,
       image: { type: 'jpeg' as const, quality: 0.95 },
       html2canvas: { scale: 2, useCORS: true, logging: false, windowWidth: 794 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const },
